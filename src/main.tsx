@@ -18,7 +18,7 @@ createRoot(document.getElementById('root')!).render(
           <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <Suspense fallback={<LoadingPage/>}>
               <App />
-              <Toaster />
+              <Toaster position="top-right" richColors expand={true} duration={3000}/>
             </Suspense>
           </ThemeProvider>
         </Provider>
