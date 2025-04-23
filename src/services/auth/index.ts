@@ -1,10 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "@/configs/config";
 import { InvalidatesTagsEnum } from "@/constants/invalidates-tags";
-import { LoginRequest, RegisterRequest, RegisterResponse, UserResponse } from "@/interfaces/auth";
 
 const reducerPath = "authApi";
-const endpoint = 'auth';
+const endpoint = 'admin/auth';
 
 
 export const authApi = createApi({
@@ -24,7 +23,7 @@ export const authApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    login: builder.mutation<UserResponse, LoginRequest>({
+    login: builder.mutation<ApiResponse<UserResponse>, LoginRequest>({
       query: (body) => ({
         url: `${endpoint}/login`,
         method: "POST",
@@ -33,19 +32,12 @@ export const authApi = createApi({
       async onQueryStarted(_arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          localStorage.setItem("auth-token", JSON.stringify(data.token));
+          localStorage.setItem("auth-token", JSON.stringify(data.data.token));
         } catch (error) {
           console.error("Login error:", error);
         }
       },
-    }),
-    register: builder.mutation<RegisterResponse, RegisterRequest>({
-      query: (body) => ({
-        url: `${endpoint}/register`,
-        method: "POST",
-        body,
-      }),
-    }),
+    }),    
     logout: builder.mutation<void, void>({
       queryFn: () => {
         localStorage.removeItem("auth-token");
