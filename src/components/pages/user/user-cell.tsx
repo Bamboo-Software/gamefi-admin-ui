@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { TableCell } from '@/components/ui/table';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Coins, Ticket, MoreHorizontal } from 'lucide-react';
@@ -10,17 +9,21 @@ import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
   DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 type CellType =
-  | 'checkbox'
-  | 'id'
   | 'userInfo'
   | 'email'
   | 'role'
   | 'points'
   | 'lottery'
   | 'status'
-  | 'date'
+  | 'lastLoginAt'
+  | 'deletedAt'
   | 'actions';
 
 export interface CellProps {
@@ -31,15 +34,7 @@ export interface CellProps {
   }
 
 
-const renderCheckbox = ({ checked, onChange, label }: any) => (
-  <TableCell>
-    <Checkbox checked={checked} onCheckedChange={onChange} aria-label={label} />
-  </TableCell>
-);
 
-const renderId = (value: string) => (
-  <TableCell className="font-medium">{value}</TableCell>
-);
 
 const renderUserInfo = ({ name, avatar, createdAt }: any) => (
   <TableCell>
@@ -56,11 +51,23 @@ const renderUserInfo = ({ name, avatar, createdAt }: any) => (
   </TableCell>
 );
 
-const renderRole = ({ children }: any) => (
+const renderRole = ({ children }: Omit<CellProps, 'type' | 'value'>) => (
   <TableCell className="font-medium">{children}</TableCell>
 );
-const renderEmail = ({ value }: any) => (
-  <TableCell className="font-medium">{value}</TableCell>
+
+const renderEmail = ({ value }: {value:string}) => (
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <TableCell className="font-medium max-w-[100px] truncate cursor-pointer">
+          {value}
+        </TableCell>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p className='font-medium'>{value}</p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 );
 
 const renderPoints = (value: string) => (
@@ -92,7 +99,10 @@ const renderStatus = ({ value, getStatusColor }: any) => (
   </TableCell>
 );
 
-const renderDate = (value: string) => (
+const renderLastLoginAt = (value: string) => (
+  <TableCell className="font-medium">{value}</TableCell>
+);
+const renderDeletedAt = (value: string) => (
   <TableCell className="font-medium">{value}</TableCell>
 );
 
@@ -117,20 +127,19 @@ const renderActions = ({ onEdit, onDelete, onView }: any) => (
 );
 
 
-const TableGenericCell: React.FC<CellProps> = ({ type, value, ...rest }) => {
+const TableGenericCell: React.FC<CellProps> = React.memo(({ type, value, ...rest }) => {
   switch (type) {
-    case 'checkbox': return renderCheckbox(rest);
-    case 'id': return renderId(value);
     case 'userInfo': return renderUserInfo(rest);
     case 'email': return renderEmail({ value,...rest });
     case 'role': return renderRole(rest);
     case 'points': return renderPoints(value);
     case 'lottery': return renderLottery(value);
     case 'status': return renderStatus({ value, ...rest });
-    case 'date': return renderDate(value);
+    case 'lastLoginAt': return renderLastLoginAt(value);
+    case 'deletedAt': return renderDeletedAt(value);
     case 'actions': return renderActions(rest);
     default: return <TableCell>{value}</TableCell>;
   }
-};
+});
 
 export default TableGenericCell;

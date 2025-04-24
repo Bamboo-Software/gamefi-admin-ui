@@ -1,6 +1,6 @@
-import { TableHead } from '@/components/ui/table';
-import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
-import React from 'react';
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import { TableHead } from "./ui/table";
+import React from "react";
 
 interface TableHeadSortableProps {
   onClick?: () => void;
@@ -10,30 +10,37 @@ interface TableHeadSortableProps {
   title: string;
 }
 
-const TableColumnHeader  = ({
+const TableColumnHeader = React.memo(({
   onClick,
   sortConfig,
   columnKey,
   icon,
   title,
 }: TableHeadSortableProps) => {
+  const sortableColumns = ['pointsBalance', 'lotteryEntries', 'lastLoginAt'];
+  const shouldShowSortIcon = sortableColumns.includes(columnKey);
+  const isSortedColumn = sortConfig?.key === columnKey;
+
   return (
-    <TableHead className="cursor-pointer" onClick={onClick}>
+    <TableHead
+      className={`cursor-pointer ${['id', 'email'].includes(columnKey) ? 'max-w-[100px]' : ''}`}
+      onClick={onClick}
+    >
       <div className="flex items-center gap-1">
         {icon}
         {title}
-        {sortConfig?.key === columnKey ? (
-          sortConfig.direction === 'ASC' ? (
+        {shouldShowSortIcon && isSortedColumn ? (
+          sortConfig!.direction === 'ASC' ? (
             <ArrowUp className="inline h-4 w-4 ml-1" />
           ) : (
             <ArrowDown className="inline h-4 w-4 ml-1" />
           )
-        ) : (
+        ) : shouldShowSortIcon ? (
           <ArrowUpDown className="inline h-4 w-4 ml-1" />
-        )}
+        ) : null}
       </div>
     </TableHead>
   );
-};
+});
 
-export default TableColumnHeader ;
+export default TableColumnHeader;

@@ -13,8 +13,9 @@ declare global {
     }
     lotteryEntries: number;
     emailVerified?: boolean;
-    active?: boolean;
+    active: boolean;
     lastLoginAt?: string;
+    deletedAt?: string;
     createdAt?:string
     }
 }

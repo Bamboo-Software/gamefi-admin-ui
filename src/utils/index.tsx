@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { User } from 'lucide-react';
 
 export const formattedDate = (date?: string): string => {
-  if (!date) return ''; // Nếu không có date, trả về chuỗi rỗng
+  if (!date) return '';
   let formatted;
   try {
     formatted = format(new Date(date), 'yyyy-MM-dd');

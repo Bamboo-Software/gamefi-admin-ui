@@ -7,7 +7,7 @@ import {
   PaginationNext,
   PaginationLink,
   PaginationEllipsis,
-} from '@/components/ui/pagination'; // Đảm bảo rằng các components này đã được định nghĩa sẵn
+} from '@/components/ui/pagination';
 
 interface PaginationProps {
   currentPage: number;
@@ -15,7 +15,7 @@ interface PaginationProps {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const PaginationTable: React.FC<PaginationProps> = ({ currentPage, totalPages, setCurrentPage }) => {
+const PaginationTable: React.FC<PaginationProps> = React.memo(({ currentPage, totalPages, setCurrentPage }) => {
   const handlePreviousClick = () => {
     setCurrentPage(prev => Math.max(prev - 1, 1));
   };
@@ -27,14 +27,15 @@ const PaginationTable: React.FC<PaginationProps> = ({ currentPage, totalPages, s
   const handlePageClick = (page: number) => {
     setCurrentPage(page);
   };
-
+  const isPrevDisabled = currentPage <= 1;
+  const isNextDisabled = currentPage >= totalPages;
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
             onClick={handlePreviousClick}
-            className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+            className={isPrevDisabled ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
           />
         </PaginationItem>
 
@@ -77,12 +78,12 @@ const PaginationTable: React.FC<PaginationProps> = ({ currentPage, totalPages, s
         <PaginationItem>
           <PaginationNext
             onClick={handleNextClick}
-            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+            className={isNextDisabled ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
           />
         </PaginationItem>
       </PaginationContent>
     </Pagination>
   );
-};
+});
 
 export default PaginationTable;

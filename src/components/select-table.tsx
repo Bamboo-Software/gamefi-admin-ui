@@ -4,9 +4,9 @@ import { ROW_OPTIONS } from '@/constants';
 
 const RowsSelectContent = () => {
   return (
-    <SelectContent>
+    <SelectContent >
       {ROW_OPTIONS.map(option => (
-        <SelectItem key={option.value} value={option.value}>
+        <SelectItem key={option.value} value={option.value} className='font-medium'>
           {option.label}
         </SelectItem>
       ))}
