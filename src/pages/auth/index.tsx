@@ -6,12 +6,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import SpinnerAuth from '@/components/pages/auth/spinner-auth';
 import { containerVariants, glowVariants, titleVariants } from '@/constants/auth';
 import InputForm from '@/components/pages/auth/input-form';
 import { useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import useLogin from '@/hooks/auth/useLogin';
+import { LoadingSpinner } from '@/components/spinner';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -76,7 +76,6 @@ const AuthPage = () => {
               </motion.span>
             </h2>
           </motion.div>
-          
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full max-w-md z-20">
             <InputForm
@@ -113,15 +112,15 @@ const AuthPage = () => {
                 </div>
               </div>
 
-              <Button 
+              <Button
                 aria-label="Sign in"
-                type="submit" 
-                disabled={isLoading} 
+                type="submit"
+                disabled={isLoading}
                 className="w-full"
               >
                 {isLoading ? (
                   <>
-                    <SpinnerAuth/>
+                    <LoadingSpinner/>
                     Signing in...
                   </>
                 ) : "Sign in"}

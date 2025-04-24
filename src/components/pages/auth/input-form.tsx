@@ -11,7 +11,6 @@ type RenderFieldProps<T extends FieldValues> = {
     disabled?: boolean;
     inputClassName?: string;
   };
-  
 const InputForm = <T extends FieldValues>({
     control,
     name,
@@ -43,5 +42,4 @@ const InputForm = <T extends FieldValues>({
       />
     );
 };
-  
 export default InputForm

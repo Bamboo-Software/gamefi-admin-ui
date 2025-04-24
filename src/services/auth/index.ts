@@ -38,13 +38,6 @@ export const authApi = createApi({
         }
       },
     }),    
-    register: builder.mutation<RegisterResponse, RegisterRequest>({
-      query: (body) => ({
-        url: `${endpoint}/register`,
-        method: "POST",
-        body,
-      }),
-    }),
     logout: builder.mutation<void, void>({
       queryFn: () => {
         localStorage.removeItem("auth-token");

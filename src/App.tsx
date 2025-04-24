@@ -1,8 +1,7 @@
 import { createBrowserRouter, 
-  // Navigate, 
-  // Navigate, 
+  Navigate, 
   RouterProvider, 
-  // useLocation
+  useLocation
 } from 'react-router-dom';
 import { routesPaths } from './constants/routes';
 import ErrorPage from '@/pages/ErrorPage';
@@ -10,9 +9,9 @@ import PageLayout from './layouts/PageLayout';
 import AuthPage from './pages/auth';
 import AuthLayout from './layouts/AuthLayout';
 import Overview from './pages/overview';
-// import LoadingPage from './pages/LoadingPage';
-// import { useRef } from 'react';
-// import { useGetMeQuery, useLazyGetMeQuery } from './services/auth';
+import LoadingPage from './pages/LoadingPage';
+import { useRef } from 'react';
+import { useGetMeQuery, useLazyGetMeQuery } from './services/auth';
 import Tasks from './pages/tasks';
 import Analytic from './pages/analytic';
 import Users from './pages/users';
@@ -31,46 +30,46 @@ const {
   HELP,
 } = routesPaths;
 
-// const PrivateRoute = ({ children }: {children: React.ReactNode}) => {
-//   const token = localStorage.getItem('auth-token');
+const PrivateRoute = ({ children }: {children: React.ReactNode}) => {
+  const token = localStorage.getItem('auth-token');
 
-//   const { error, isLoading } = useGetMeQuery({});
+  const { error, isLoading } = useGetMeQuery({});
   
-//   if (isLoading) {
-//     return <LoadingPage/>;
-//   }
-//   if (!token || (error && 'status' in error && error.status === 401)) {
-//     localStorage.removeItem('auth-token');
-//     return <Navigate to="/auth" replace />;
-//   }
-//   return children;
-// };
+  if (isLoading) {
+    return <LoadingPage/>;
+  }
+  if (!token || (error && 'status' in error && error.status === 401)) {
+    localStorage.removeItem('auth-token');
+    return <Navigate to="/auth" replace />;
+  }
+  return children;
+};
 
-// const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-//   const token = localStorage.getItem('auth-token');
-//   const location = useLocation();
-//   const [getMe, { isLoading, error }] = useLazyGetMeQuery();
-//   const isGetMeCalled = useRef(false);
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const token = localStorage.getItem('auth-token');
+  const location = useLocation();
+  const [getMe, { isLoading, error }] = useLazyGetMeQuery();
+  const isGetMeCalled = useRef(false);
 
-//   if (token && !isGetMeCalled.current) {
-//     getMe({});
-//     isGetMeCalled.current = true;
-//   }
+  if (token && !isGetMeCalled.current) {
+    getMe({});
+    isGetMeCalled.current = true;
+  }
 
-//   if (isLoading) {
-//     return <LoadingPage />;
-//   }
+  if (isLoading) {
+    return <LoadingPage />;
+  }
 
-//   if (location.pathname === '/auth/callback') {
-//     return children;
-//   }
+  if (location.pathname === '/auth/callback') {
+    return children;
+  }
 
-//   if (token && !(error && 'status' in error && error.status === 401)) {
-//     return <Navigate to="/" replace />;
-//   }
+  if (token && !(error && 'status' in error && error.status === 401)) {
+    return <Navigate to="/" replace />;
+  }
 
-//   return children;
-// };
+  return children;
+};
 
 
 const routes = createBrowserRouter([
@@ -78,9 +77,9 @@ const routes = createBrowserRouter([
   {
     path: ROOT,
     element: 
-    // <PrivateRoute>
+    <PrivateRoute>
       <PageLayout/>
-      //</PrivateRoute>
+      </PrivateRoute>
       ,
     children: [
       { index: true, element: <Overview /> },
@@ -95,9 +94,9 @@ const routes = createBrowserRouter([
   {
     path: AUTH,
     element: 
-    // <PublicRoute>
+    <PublicRoute>
       <AuthLayout/>
-      //</PublicRoute>
+      </PublicRoute>
       ,
     children: [
       { index: true, element: <AuthPage /> },
