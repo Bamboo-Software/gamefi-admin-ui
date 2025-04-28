@@ -9,25 +9,24 @@ import {
 
 import {
   Select,
-
-  SelectContent,
-
-  SelectItem,
-
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Download, RefreshCw } from "lucide-react";
 import { useDeleteUserMutation, useGetAllUsersQuery, useUpdateUserMutation } from "@/services/users";
-import RowsSelectContent from "@/components/select-table";
 import { LoadingSpinner } from "@/components/spinner";
 import { debounce } from "lodash";
 import SearchInput from "@/components/input-search";
 import DialogEditUser from "./dialog-edit";
 import { ConfirmDeleteDialog } from "./dialog-delete";
+import { ROW_OPTIONS } from "@/constants";
+import GenericSelectContent from "@/components/select-table";
+import { getUserCellConfigs, ROLE_OPTIONS, STATUS_OPTIONS, TABLE_HEADERS } from "@/constants/user";
+import { getStatusColor } from "@/utils";
+import { AdminTable } from "@/components/table-admin";
+import TableUserGenericCell from "@/components/pages/user/user-cell";
 
-const AdminTable = React.lazy(() => import("@/components/table-user"));
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 
 const Users = () => {
@@ -110,13 +109,6 @@ const Users = () => {
     }
   }, [total, itemsPerPage, currentPage]);
 
-  const getStatusColor = useMemo(
-    () => (active: boolean) =>
-      active
-        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-        : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
-    []
-  );
 
   const handleSelectUser = useCallback((userId: string) => {
     setSelectedUsers((prev) =>
@@ -183,7 +175,7 @@ const handleEditUser = useCallback(async () => {
             </CardDescription>
             <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mt-4">
               <div className="flex gap-4">
-                <SearchInput searchTerm={searchTerm} onChange={handleChange} />
+                <SearchInput placeholder={"Search user..."} searchTerm={searchTerm} onChange={handleChange} />
                 <Select
                   value={role}
                   onValueChange={(value) => setRole(value)}
@@ -191,12 +183,7 @@ const handleEditUser = useCallback(async () => {
                   <SelectTrigger className="w-[120px] font-medium cursor-pointer">
                     <SelectValue placeholder="Role" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="user">User</SelectItem>
-                    <SelectItem value="guest">Guest</SelectItem>
-                    <SelectItem value="superadmin">Super Admin</SelectItem>
-                  </SelectContent>
+                  <GenericSelectContent options={ROLE_OPTIONS} />
                 </Select>
                 <Select
                   value={active}
@@ -205,10 +192,7 @@ const handleEditUser = useCallback(async () => {
                   <SelectTrigger className="w-[120px] font-medium cursor-pointer">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Active</SelectItem>
-                    <SelectItem value="false">Inactive</SelectItem>
-                  </SelectContent>
+                  <GenericSelectContent options={STATUS_OPTIONS} />
                 </Select>
               </div>
               <div className="flex items-center gap-4">
@@ -236,25 +220,28 @@ const handleEditUser = useCallback(async () => {
                 <SelectTrigger className="w-[100px] font-medium cursor-pointer">
                   <SelectValue placeholder="Rows" />
                 </SelectTrigger>
-                <RowsSelectContent />
+                <GenericSelectContent options={ROW_OPTIONS} />
               </Select>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <AdminTable
-              users={users}
-              selectedUsers={selectedUsers}
-              sortConfig={sortConfig}
-              isLoading={isLoading}
-              handleSelectUser={handleSelectUser}
-              handleDeleteUser={handleOpenDeleteDialog}
-              setCurrentUser={setCurrentUser}
-              setIsEditUserOpen={setIsEditUserOpen}
-              getStatusColor={getStatusColor}
-              handleSelectAll={handleSelectAll}
-              handleSort={handleSort}
-            />
+          <AdminTable<User>
+            data={users}
+            selectedUsers={selectedUsers}
+            sortConfig={sortConfig}
+            isLoading={isLoading}
+            handleSelect={handleSelectUser}
+            handleDelete={handleOpenDeleteDialog}
+            setCurrent={setCurrentUser}
+            setIsEditOpen={setIsEditUserOpen}
+            getStatusColor={getStatusColor}
+            handleSelectAll={handleSelectAll}
+            handleSort={handleSort}
+              getCellConfigs={(user, utils) => getUserCellConfigs(user, utils)}
+              renderCell={(config, idx) => <TableUserGenericCell key={idx} {...config} />}
+              columns={TABLE_HEADERS}
+          />
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground min-w-[200px]">
                 {isLoading ? (

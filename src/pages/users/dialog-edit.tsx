@@ -1,9 +1,12 @@
+import GenericSelectContent from "@/components/select-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ROLE_OPTIONS, STATUS_OPTIONS } from "@/constants/user";
+import { RoleTypeEnum } from "@/enums/user.enums";
 import React from "react";
 
 const DialogEditUser = React.memo(({ isEditUserOpen, handleEditUser, setIsEditUserOpen, currentUser,setCurrentUser }: { isEditUserOpen: boolean, handleEditUser: () => void, setIsEditUserOpen: React.Dispatch<React.SetStateAction<boolean>>, currentUser: User | null ,setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>}) => {
@@ -63,17 +66,12 @@ const DialogEditUser = React.memo(({ isEditUserOpen, handleEditUser, setIsEditUs
                       </Label>
                       <Select
                         value={currentUser.role}
-                        onValueChange={(value) => setCurrentUser({ ...currentUser, role: value })}
+                        onValueChange={(value) => setCurrentUser({ ...currentUser, role: value as RoleTypeEnum })}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select role" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="user">User</SelectItem>
-                          <SelectItem value="guest">Guest</SelectItem>
-                          <SelectItem value="superadmin">Super Admin</SelectItem>
-                        </SelectContent>
+                        <GenericSelectContent options={ROLE_OPTIONS} />
                       </Select>
                     </div>
                     <div className="flex items-center gap-4">
@@ -81,7 +79,7 @@ const DialogEditUser = React.memo(({ isEditUserOpen, handleEditUser, setIsEditUs
                         Status
                       </Label>
                       <Select
-                        value={currentUser.active.toString()} // Convert boolean to string
+                        value={currentUser.active.toString()}
                         onValueChange={(value) =>
                           setCurrentUser({ ...currentUser, active: value === "true" })
                         }
@@ -89,10 +87,7 @@ const DialogEditUser = React.memo(({ isEditUserOpen, handleEditUser, setIsEditUs
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select status" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="true">Active</SelectItem>
-                          <SelectItem value="false">Inactive</SelectItem>
-                        </SelectContent>
+                        <GenericSelectContent options={STATUS_OPTIONS} />
                       </Select>
                     </div>
                   </div>

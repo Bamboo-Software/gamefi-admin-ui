@@ -1,3 +1,5 @@
+import { RoleTypeEnum } from "@/enums/user.enums";
+
 declare global {
     export interface User {
     _id: string;
@@ -7,7 +9,7 @@ declare global {
     name: string;
     avatar:string
     email: string;
-    role: string;
+    role: RoleTypeEnum;
     pointsBalance: {
         $numberDecimal:string
     }

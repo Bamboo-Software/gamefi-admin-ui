@@ -17,13 +17,13 @@ const TableColumnHeader = React.memo(({
   icon,
   title,
 }: TableHeadSortableProps) => {
-  const sortableColumns = ['pointsBalance', 'lotteryEntries', 'lastLoginAt'];
+  const sortableColumns = ['pointsBalance', 'lotteryEntries', 'lastLoginAt',"pointsReward","frequency"];
   const shouldShowSortIcon = sortableColumns.includes(columnKey);
   const isSortedColumn = sortConfig?.key === columnKey;
 
   return (
     <TableHead
-      className={`cursor-pointer ${['id', 'email'].includes(columnKey) ? 'max-w-[100px]' : ''}`}
+      className={`cursor-pointer ${['id', 'email', 'title'].includes(columnKey) ? '!max-w-[100px]' : ''} ${['actions'].includes(columnKey) ? 'flex justify-end' : ''}`}
       onClick={onClick}
     >
       <div className="flex items-center gap-1">

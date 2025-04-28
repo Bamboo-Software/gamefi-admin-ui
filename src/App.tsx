@@ -12,12 +12,13 @@ import Overview from './pages/overview';
 import LoadingPage from './pages/LoadingPage';
 import { useRef } from 'react';
 import { useGetMeQuery, useLazyGetMeQuery } from './services/auth';
-import Tasks from './pages/tasks';
+// import Tasks from './pages/tasks';
 import Analytic from './pages/analytic';
 import Users from './pages/users';
 import Settings from './pages/settings';
 import Help from './pages/help';
 import Calendar from './pages/calendar';
+import Tasks from './pages/tasks';
 
 const {
   ROOT,
@@ -76,7 +77,7 @@ const routes = createBrowserRouter([
 
   {
     path: ROOT,
-    element: 
+    element:
     <PrivateRoute>
       <PageLayout/>
       </PrivateRoute>
@@ -93,7 +94,7 @@ const routes = createBrowserRouter([
   },
   {
     path: AUTH,
-    element: 
+    element:
     <PublicRoute>
       <AuthLayout/>
       </PublicRoute>

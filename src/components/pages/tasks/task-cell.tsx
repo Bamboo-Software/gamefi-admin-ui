@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { TableCell } from '@/components/ui/table';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Coins, Ticket, MoreHorizontal } from 'lucide-react';
+import { Coins, MoreHorizontal, Repeat, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
@@ -15,22 +14,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-type CellTypeUser =
-  | 'userInfo'
-  | 'email'
-  | 'role'
-  | 'points'
-  | 'lottery'
+type CellTypeTask =
+  | 'title'
+  | 'description'
+  | 'type'
+  | 'pointsReward'
+  | 'frequency'
   | 'status'
+  | 'requiredCount'
   | 'lastLoginAt'
+  | 'socialTaskType'
   | 'deletedAt'
   | 'actions';
 
-  export interface CellPropsUser {
-    type: CellTypeUser;
+  export interface CellPropsTask {
+    type: CellTypeTask;
     value?: string | number | boolean;
-    name?: string;
-    avatar?: string;
     createdAt?: string;
     children?: React.ReactNode;
     getStatusColor?: (active: boolean) => string;
@@ -39,29 +38,20 @@ type CellTypeUser =
     onDelete?: () => void;
   }
 
-
-
-
-const renderUserInfo = ({ name, avatar, createdAt }: any) => (
-  <TableCell>
-    <div className="flex items-center gap-2">
-      <Avatar className="h-8 w-8">
-        <AvatarImage src={avatar ?? 'https://github.com/shadcn.png'} alt={name} />
-        <AvatarFallback>{name?.split(' ').map((n: any[]) => n[0]).join('')}</AvatarFallback>
-      </Avatar>
-      <div>
-        <p className="font-medium">{name}</p>
-        <p className="text-xs text-muted-foreground">Joined {createdAt}</p>
-      </div>
-    </div>
-  </TableCell>
-);
-
-const renderRole = ({ children }: Omit<CellPropsUser, 'type' | 'value'>) => (
+const renderTitle = ({ children }: Omit<CellPropsTask, 'type' | 'value'>) => (
   <TableCell className="font-medium">{children}</TableCell>
 );
-
-const renderEmail = ({ value }: {value:string}) => (
+const renderType = ({ children }: Omit<CellPropsTask, 'type' | 'value'>) => {
+  return (
+    <TableCell className="font-medium">{children}</TableCell>
+    )
+}
+const renderSocialTaskType = ({ children }: Omit<CellPropsTask, 'type' | 'value'>) => {
+  return (
+    <TableCell className="font-medium">{children}</TableCell>
+    )
+}
+const renderDescription = ({ value }: {value:string}) => (
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger asChild>
@@ -85,15 +75,22 @@ const renderPoints = (value: string) => (
   </TableCell>
 );
 
-const renderLottery = (value: number) => (
+const renderPointsReward = (value: number) => (
   <TableCell className="font-medium">
     <div className="flex items-center gap-2 text-sm">
-      <Ticket className="w-4 h-4 text-indigo-500" />
+      <Award className="inline w-4 h-4 mr-1 text-yellow-500" />
       <span>{value ?? 0}</span>
     </div>
   </TableCell>
 );
-
+const renderFrequency = (value: number) => (
+  <TableCell className="font-medium">
+    <div className="flex items-center gap-2 text-sm">
+      <Repeat className="inline w-4 h-4 mr-1 text-indigo-500" />
+      <span>{value ?? 0}</span>
+    </div>
+  </TableCell>
+);
 const renderStatus = ({ value, getStatusColor }: any) => (
   <TableCell>
     <Badge className={getStatusColor(value)}>
@@ -105,15 +102,12 @@ const renderStatus = ({ value, getStatusColor }: any) => (
   </TableCell>
 );
 
-const renderLastLoginAt = (value: string) => (
-  <TableCell className="font-medium">{value}</TableCell>
-);
 const renderDeletedAt = (value: string) => (
   <TableCell className="font-medium">{value}</TableCell>
 );
 
-const renderActions = ({ onEdit, onDelete }: any) => (
-  <TableCell className="text-right">
+const renderActions = ({ onEdit, onDelete,onView }: any) => (
+  <TableCell className="text-right flex justify-end">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -123,39 +117,41 @@ const renderActions = ({ onEdit, onDelete }: any) => (
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={onEdit}>Edit user</DropdownMenuItem>
-        {/* {onView && <DropdownMenuItem onClick={onView}>View user</DropdownMenuItem>} */}
+        <DropdownMenuItem onClick={onEdit}>Edit task</DropdownMenuItem>
+        {onView && <DropdownMenuItem onClick={onView}>View task</DropdownMenuItem>}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onDelete} className="text-red-600">Delete user</DropdownMenuItem>
+        <DropdownMenuItem onClick={onDelete} className="text-red-600">Delete task</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </TableCell>
 );
 
 
-const TableUserGenericCell: React.FC<CellPropsUser> = React.memo(({ type, ...rest }) => {
+const TableTaskGenericCell: React.FC<CellPropsTask> = React.memo(({ type, ...rest }) => {
   switch (type) {
-    case "userInfo":
-      return renderUserInfo(rest as { name?: string; avatar?: string; createdAt?: string });
-    case "email":
-      return renderEmail(rest as { value: string });
-    case "role":
-      return renderRole(rest as { children: React.ReactNode });
-    case "points":
+    case "title":
+      return renderTitle(rest as { children: React.ReactNode });
+    case "description":
+      return renderDescription(rest as { value: string });
+    case "type":
+      return renderType(rest as { children: React.ReactNode });
+    case "socialTaskType":
+      return renderSocialTaskType(rest as { children: React.ReactNode });
+    case "requiredCount":
       return renderPoints((rest as { value: string }).value);
-    case "lottery":
-      return renderLottery((rest as { value: number }).value);
+    case "frequency":
+      return renderFrequency((rest as { value: number }).value);
+    case "pointsReward":
+      return renderPointsReward((rest as { value: number }).value);
     case "status":
       return renderStatus(rest as { value: boolean; getStatusColor: (active: boolean) => string });
-    case "lastLoginAt":
-      return renderLastLoginAt((rest as { value: string }).value);
     case "deletedAt":
       return renderDeletedAt((rest as { value: string }).value);
     case "actions":
       return renderActions(rest as { onEdit?: () => void; onView?: () => void; onDelete?: () => void });
     default:
-      return <TableCell>{(rest as { value?: string | number | boolean }).value ?? ""}</TableCell>;
+      return <TableCell>{(rest as { value?: string | number | boolean }).value ?? ''}</TableCell>;
   }
 });
 
-export default TableUserGenericCell;
+export default TableTaskGenericCell;
