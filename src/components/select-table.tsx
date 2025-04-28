@@ -1,12 +1,20 @@
 import { SelectContent, SelectItem } from '@/components/ui/select';
-import { ROW_OPTIONS } from '@/constants';
 
+type Option = {
+  value: string;
+  label: string;
+};
 
-const RowsSelectContent = () => {
+type GenericSelectContentProps = {
+  options: Option[];
+  itemClassName?: string;
+};
+
+const GenericSelectContent = ({ options, itemClassName = 'font-medium' }: GenericSelectContentProps) => {
   return (
-    <SelectContent >
-      {ROW_OPTIONS.map(option => (
-        <SelectItem key={option.value} value={option.value} className='font-medium'>
+    <SelectContent className="max-h-60 overflow-y-auto">
+      {options.map(option => (
+        <SelectItem key={option.value} value={option.value} className={itemClassName}>
           {option.label}
         </SelectItem>
       ))}
@@ -14,4 +22,4 @@ const RowsSelectContent = () => {
   );
 };
 
-export default RowsSelectContent;
+export default GenericSelectContent;

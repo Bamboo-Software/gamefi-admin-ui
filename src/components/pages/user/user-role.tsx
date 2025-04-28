@@ -1,6 +1,7 @@
+import { RoleTypeEnum } from "@/enums/user.enums"
 import { getRoleVisual } from "@/utils"
 
-const RoleCol = ({ role }:{role:string}) => {
+const RoleCol = ({ role }:{role:RoleTypeEnum}) => {
     return (
         <>
             <div className="flex items-center gap-2">

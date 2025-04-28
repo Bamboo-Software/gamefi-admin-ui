@@ -1,31 +1,32 @@
-import { CellProps } from '@/components/pages/user/user-cell';
+import { CellPropsUser } from '@/components/pages/user/user-cell';
 import RoleCol from '@/components/pages/user/user-role';
+import { RoleTypeEnum } from '@/enums/user.enums';
 import { ShieldAlert, ShieldCheck, User, Eye, Mail, Shield, Coins, Ticket, CircleCheck, Clock, UserIcon, Settings } from 'lucide-react';
 
 export const ROLE_VISUALS: Record<
-  string,
+  RoleTypeEnum,
   {
     icon: React.ReactNode;
     text: string;
     textColor: string;
   }
 > = {
-  superadmin: {
+  [RoleTypeEnum.SuperAdmin]: {
     icon: <ShieldAlert className="w-4 h-4 text-red-500" />,
     text: 'Super Admin',
     textColor: 'text-red-600',
   },
-  admin: {
+  [RoleTypeEnum.Admin]: {
     icon: <ShieldCheck className="w-4 h-4 text-blue-500" />,
     text: 'Admin',
     textColor: 'text-blue-600',
   },
-  user: {
+  [RoleTypeEnum.User]: {
     icon: <User className="w-4 h-4 text-green-500" />,
     text: 'User',
     textColor: 'text-green-600',
   },
-  guest: {
+  [RoleTypeEnum.Guest]: {
     icon: <Eye className="w-4 h-4 text-gray-500" />,
     text: 'Guest',
     textColor: 'text-gray-600',
@@ -80,16 +81,40 @@ export const TABLE_HEADERS = [
   },
 ];
 
+export const ROLE_OPTIONS = [
+  { value: 'superadmin', label: 'Super Admin' },
+  { value: 'admin', label: 'Admin' },
+  { value: 'user', label: 'User' },
+  { value: 'guest', label: 'Guest' }
+];
+export const FREQUENCY_OPTIONS = [
+  { value: 'daily', label: 'Daily' },
+  { value: 'weekly', label: 'Weekly' },
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'permanent', label: 'Permanent' }
+];
+export const STATUS_OPTIONS = [
+  { value: 'true', label: 'Active' },
+  { value: 'false', label: 'Inactive' },
+];
 export const getUserCellConfigs = (
-user: User, handleDeleteUser: ((user: User) => void),
-setCurrentUser: (user: User) => void, setIsEditUserOpen: (open: boolean) => void, getStatusColor: (active: boolean) => string, formattedDate: (date?: string) => string,
-): CellProps[] => {
-  const cellConfigs: CellProps[] = [
+  user: User,
+  utils: {
+    handleDelete: (user: User) => void;
+    setCurrent: (user: User) => void;
+    setEditOpen: (open: boolean) => void;
+    getStatusColor: (active: boolean) => string;
+    formatDate: (date?: string) => string;
+  }
+): CellPropsUser[] => {
+  const { handleDelete, setCurrent, setEditOpen, getStatusColor, formatDate } = utils;
+
+  return [
     {
       type: 'userInfo',
       name: user.name ?? `${user.firstName} ${user.lastName}`,
       avatar: user.avatar,
-      createdAt: formattedDate(user?.createdAt),
+      createdAt: formatDate(user?.createdAt),
     },
     {
       type: "email",
@@ -114,22 +139,21 @@ setCurrentUser: (user: User) => void, setIsEditUserOpen: (open: boolean) => void
     },
     {
       type: 'lastLoginAt',
-      value: formattedDate(user?.lastLoginAt),
+      value: formatDate(user?.lastLoginAt),
     },
     {
       type: 'deletedAt',
-      value: formattedDate(user?.deletedAt),
+      value: formatDate(user?.deletedAt),
     },
     {
       type: 'actions',
       onEdit: () => {
-        setCurrentUser(user);
-        setIsEditUserOpen(true);
+        setCurrent(user);
+        setEditOpen(true);
       },
-      onView: () => console.log('View user'),
-      onDelete: () => handleDeleteUser(user),
+      // onView: () => console.log('View user'),
+      onDelete: () => handleDelete(user),
     },
   ];
-
-  return cellConfigs;
 };
+
