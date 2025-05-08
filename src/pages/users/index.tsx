@@ -2,9 +2,7 @@ import React, { Suspense, useCallback, useEffect, useMemo, useState } from "reac
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 
 import {
@@ -26,6 +24,8 @@ import { getUserCellConfigs, ROLE_OPTIONS, STATUS_OPTIONS, TABLE_HEADERS } from 
 import { getStatusColor } from "@/utils";
 import { AdminTable } from "@/components/table-admin";
 import TableUserGenericCell from "@/components/pages/user/user-cell";
+import { PageHeading } from "@/components/page-heading";
+import { SectionHeader } from "@/components/section-header";
 
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 
@@ -132,9 +132,6 @@ const handleEditUser = useCallback(async () => {
   }
 }, [currentUser, updateUser])
 
-  const handleSelectAll = useCallback(() => {
-    setSelectedUsers(selectedUsers.length === users.length ? [] : users.map((user) => user._id));
-  }, [selectedUsers.length, users]);
 
 
   const handleSort = useCallback((key: string) => {
@@ -156,12 +153,10 @@ const handleEditUser = useCallback(async () => {
     <Suspense fallback={<LoadingSpinner />}>
       <div className="p-6 space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-            <p className="text-muted-foreground">
-              Manage your organization's users and their permissions
-            </p>
-          </div>
+          <PageHeading
+            title="User Management"
+            subtitle=" Manage your organization's users and their permissions"
+          />
           <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
             Export
@@ -169,10 +164,10 @@ const handleEditUser = useCallback(async () => {
         </div>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle>Users</CardTitle>
-            <CardDescription>
-              Manage your organization's users, their roles, and permissions.
-            </CardDescription>
+          <SectionHeader
+            title="Users"
+            description="Manage your organization's users, their roles, and permissions."
+          />
             <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mt-4">
               <div className="flex gap-4">
                 <SearchInput placeholder={"Search user..."} searchTerm={searchTerm} onChange={handleChange} />
@@ -227,21 +222,21 @@ const handleEditUser = useCallback(async () => {
           </CardHeader>
           <CardContent>
           <AdminTable<User>
-            data={users}
-            selectedUsers={selectedUsers}
-            sortConfig={sortConfig}
-            isLoading={isLoading}
-            handleSelect={handleSelectUser}
-            handleDelete={handleOpenDeleteDialog}
-            setCurrent={setCurrentUser}
-            setIsEditOpen={setIsEditUserOpen}
-            getStatusColor={getStatusColor}
-            handleSelectAll={handleSelectAll}
-            handleSort={handleSort}
+              data={users}
+              selectedUsers={selectedUsers}
+              sortConfig={sortConfig}
+              isLoading={isLoading}
+              handleSelect={handleSelectUser}
+              handleDelete={handleOpenDeleteDialog}
+              setCurrent={setCurrentUser}
+              setIsEditOpen={setIsEditUserOpen}
+              getStatusColor={getStatusColor}
+              handleSort={handleSort}
               getCellConfigs={(user, utils) => getUserCellConfigs(user, utils)}
               renderCell={(config, idx) => <TableUserGenericCell key={idx} {...config} />}
-              columns={TABLE_HEADERS}
-          />
+              columns={TABLE_HEADERS} setIsViewOpen={function () {
+                throw new Error("Function not implemented.");
+              } }          />
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground min-w-[200px]">
                 {isLoading ? (

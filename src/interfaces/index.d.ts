@@ -21,12 +21,12 @@ declare global {
       handleSort: (key: string) => void;
       columns: TableColumn[];
       renderCell: (config: CellConfig, index: number) => JSX.Element;
-        handleSelectAll: () => void;
+        handleSelectAll?: () => void;
         selectedUsers: string[];
         handleSelect: (id: string) => void;
         handleDelete: (item: T) => void;
       setCurrent: (item: T) => void;
-      setIsViewTaskOpen: (open: boolean) => void;
+      setIsViewOpen: (open: boolean) => void;
         setIsEditOpen: (open: boolean) => void;
         getStatusColor: (active: boolean) => string;
         getCellConfigs: (
@@ -34,7 +34,7 @@ declare global {
           utils: {
             handleDelete: (item: T) => void;
             setCurrent: (item: T) => void;
-            setIsViewTaskOpen: (open: boolean) => void;
+            setIsViewOpen: (open: boolean) => void;
             setEditOpen: (open: boolean) => void;
             getStatusColor: (active: boolean) => string;
             formatDate: (date?: string) => string;

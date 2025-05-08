@@ -8,6 +8,7 @@ import themeReducer, { namespace as themeNamespace } from './theme/themeSlice';
 import { conversationsApi } from '@/services/conversations';
 import { userApi } from '@/services/users';
 import { taskApi } from '@/services/tasks';
+import { gameApi } from '@/services/games';
 
 export const listenerMiddleware = createListenerMiddleware({
   onError: () => console.error('An error listener middleware occurred'),
@@ -17,12 +18,11 @@ export const listenerMiddleware = createListenerMiddleware({
 const reducer = {
   [authNamespace]: authReducer,
   [themeNamespace]: themeReducer,
-
   [conversationsApi.reducerPath]: conversationsApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
   [taskApi.reducerPath]: taskApi.reducer,
-
+  [gameApi.reducerPath]: gameApi.reducer,
 };
 
 export const store = configureStore({
@@ -34,6 +34,7 @@ export const store = configureStore({
       conversationsApi.middleware,
       userApi.middleware,
       taskApi.middleware,
+      gameApi.middleware,
     )
     .prepend(listenerMiddleware.middleware)
 });

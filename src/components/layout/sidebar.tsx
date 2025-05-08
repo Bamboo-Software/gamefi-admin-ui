@@ -9,6 +9,7 @@ import {
   ChartArea,
   ClipboardCheck,
   Target,
+  Gamepad,
 //   Calendar
 } from "lucide-react";
 import { useState } from "react";
@@ -20,7 +21,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   onCollapse?: (collapsed: boolean) => void;
 }
 
-const { ROOT, ANALYTIC, TASKS, USERS, SETTINGS, HELP } = routesPaths
+const { ROOT, ANALYTIC, TASKS, USERS, SETTINGS, HELP,GAMES } = routesPaths
 
 export function Sidebar({ className, onCollapse }: SidebarProps) {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -65,6 +66,11 @@ export function Sidebar({ className, onCollapse }: SidebarProps) {
             title: "Tasks",
             icon: <ClipboardCheck className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")} />,
             href: TASKS,
+        },
+        {
+            title: "Games",
+            icon: <Gamepad className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")} />,
+            href: GAMES,
         },
     ];
 
@@ -140,7 +146,7 @@ export function Sidebar({ className, onCollapse }: SidebarProps) {
                     <div className="px-4 py-2 border-t ">
                         {!isCollapsed && (
                             <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
-                                Manage
+                                Lottery
                             </h2>
                         )}
                         <div className="space-y-1">

@@ -28,11 +28,12 @@ export const taskApi = createApi({
       }),
       invalidatesTags: [InvalidatesTagsEnum.TASK],
     }),
-    getAllTasks: builder.query<ApiResponse<PaginatedResponse<Task[]>>, { page?: number,q?:string,email?:string,limit?:number,type?:TaskTypeEnum,active?:string,socialTaskType?:SocialTaskTypeEnum,offset?:number,orderField?:string,orderDirection?:string,username?:string }>({
+    getAllTasks: builder.query<ApiResponse<PaginatedResponse<Task[]>>, { page?: number,q?:string,title ?:string,email?:string,limit?:number,type?:TaskTypeEnum,active?:string,socialTaskType?:SocialTaskTypeEnum,offset?:number,orderField?:string,orderDirection?:string,username?:string }>({
       query: ({ page, limit, offset,q,socialTaskType,
         orderField,
         orderDirection,
         type,
+        title,
         active}) => ({
         url: `${endpoint}/tasks`,
         method: "GET",
@@ -41,6 +42,7 @@ export const taskApi = createApi({
           limit,
           offset,
           socialTaskType,
+          title,
           q,
           orderField,
           orderDirection,
@@ -51,8 +53,8 @@ export const taskApi = createApi({
       providesTags: [InvalidatesTagsEnum.TASK],
     }),
     getTaskDetail: builder.query<Task, string>({
-      query: (userId) => ({
-        url: `${endpoint}/tasks/${userId}`,
+      query: (taskId) => ({
+        url: `${endpoint}/tasks/${taskId}`,
         method: "GET",
       }),
       providesTags: [InvalidatesTagsEnum.TASK],
@@ -66,8 +68,8 @@ export const taskApi = createApi({
       invalidatesTags: [InvalidatesTagsEnum.TASK],
     }),
     deleteTask: builder.mutation<void, string>({
-      query: (userId) => ({
-        url: `${endpoint}/tasks/${userId}`,
+      query: (taskId) => ({
+        url: `${endpoint}/tasks/${taskId}`,
         method: "DELETE",
       }),
       invalidatesTags: [InvalidatesTagsEnum.TASK],

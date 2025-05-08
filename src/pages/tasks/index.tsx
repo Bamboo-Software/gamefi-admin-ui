@@ -53,19 +53,19 @@ const Tasks = () => {
     const [currentTask, setCurrentTask] = useState<Task | null>(null);
     const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
     const [type, setType] = useState<TaskTypeEnum |string>("");
-  const [socialType, setSocialType] = useState<SocialTaskTypeEnum | string>("");
-  const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
-  const [isViewTaskOpen, setIsViewTaskOpen] = useState(false);
-  const [newTask, setNewTask] = useState({
-    title: "",
-    description: "",
-    frequency: TaskFrequencyEnum.PERMANENT,
-    pointsReward: 0,
-    rewardDetails: "",
-    type: TaskTypeEnum.OTHER,
-    active: true,
-    socialTaskType: SocialTaskTypeEnum.INSTAGRAM_COMMENT,
-  });
+    const [socialType, setSocialType] = useState<SocialTaskTypeEnum | string>("");
+    const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
+    const [isViewTaskOpen, setIsViewTaskOpen] = useState(false);
+    const [newTask, setNewTask] = useState({
+      title: "",
+      description: "",
+      frequency: TaskFrequencyEnum.PERMANENT,
+      pointsReward: 0,
+      rewardDetails: "",
+      type: TaskTypeEnum.OTHER,
+      active: true,
+      socialTaskType: SocialTaskTypeEnum.INSTAGRAM_COMMENT,
+    });
 
   const [createTask] = useCreateTaskMutation();
     const [active, setActive] = useState("");
@@ -78,6 +78,7 @@ const Tasks = () => {
       page: currentPage,
       limit: itemsPerPage,
       offset: (currentPage - 1) * itemsPerPage,
+      title: debouncedSearchTerm,
       q: debouncedSearchTerm,
       type: type,
       socialTaskType: socialType,
@@ -97,9 +98,6 @@ const Tasks = () => {
   });
   const [updateTask] = useUpdateTaskMutation();
   const [deleteTaskMutation] = useDeleteTaskMutation();
-  const handleSelectAll = useCallback(() => {
-      setSelectedTasks(selectedTasks.length === tasks.length ? [] : tasks.map((task) => task._id));
-    }, [selectedTasks.length, tasks]);
   const handleOpenDeleteDialog = (task: Task) => {
     setCurrentTask(task);
     setDialogDeleteOpen(true);
@@ -157,7 +155,6 @@ const Tasks = () => {
       await createTask(newTask).unwrap();
       toast.success("Task created successfully!");
       setIsCreateTaskOpen(false);
-      // Optionally: reset form sau khi tạo
       setNewTask({
         title: "",
         description: "",
@@ -168,8 +165,7 @@ const Tasks = () => {
         active: true,
         socialTaskType: SocialTaskTypeEnum.INSTAGRAM_COMMENT,
       });
-    } catch (error) {
-      console.error(error);
+    } catch {
       toast.error("Failed to create task!");
     }
   };
@@ -300,9 +296,8 @@ useEffect(() => {
             handleDelete={handleOpenDeleteDialog}
             setCurrent={setCurrentTask}
             setIsEditOpen={setIsEditTaskOpen}
-            setIsViewTaskOpen={setIsViewTaskOpen}
+            setIsViewOpen={setIsViewTaskOpen}
             getStatusColor={getStatusColor}
-            handleSelectAll={handleSelectAll}
             handleSort={handleSort}
             getCellConfigs={(task, utils) => getTaskCellConfigs(task, utils)}
             renderCell={(config, idx) => <TableTaskGenericCell key={idx} {...config} />}

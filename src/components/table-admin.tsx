@@ -21,7 +21,7 @@ const AdminTableComponent  =
     handleDelete,
     setCurrent,
     setIsEditOpen,
-    setIsViewTaskOpen,
+    setIsViewOpen,
     getStatusColor,
     getCellConfigs,
     handleSort,
@@ -34,14 +34,14 @@ const AdminTableComponent  =
           handleDelete: handleDelete,
           setCurrent: setCurrent,
           setEditOpen: setIsEditOpen,
-          setIsViewTaskOpen: setIsViewTaskOpen,
+          setIsViewOpen: setIsViewOpen,
           getStatusColor,
           formatDate: formattedDate,
         })
       );
     }, [
       data,
-      setIsViewTaskOpen,
+      setIsViewOpen,
       setCurrent,
       setIsEditOpen,
       handleDelete,

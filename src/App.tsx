@@ -19,6 +19,7 @@ import Settings from './pages/settings';
 import Help from './pages/help';
 import Calendar from './pages/calendar';
 import Tasks from './pages/tasks';
+import Games from './pages/games';
 
 const {
   ROOT,
@@ -29,6 +30,7 @@ const {
   USERS,
   SETTINGS,
   HELP,
+  GAMES
 } = routesPaths;
 
 const PrivateRoute = ({ children }: {children: React.ReactNode}) => {
@@ -85,6 +87,7 @@ const routes = createBrowserRouter([
     children: [
       { index: true, element: <Overview /> },
       { path: TASKS, element: <Tasks /> },
+      { path: GAMES, element: <Games /> },
       { path: CALENDAR, element: <Calendar/> },
       { path: ANALYTIC, element: <Analytic/> },
       { path: USERS, element: <Users/> },
