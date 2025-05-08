@@ -38,10 +38,6 @@ type CellTypeUser =
     onView?: () => void;
     onDelete?: () => void;
   }
-
-
-
-
 const renderUserInfo = ({ name, avatar, createdAt }: any) => (
   <TableCell>
     <div className="flex items-center gap-2">
@@ -50,7 +46,16 @@ const renderUserInfo = ({ name, avatar, createdAt }: any) => (
         <AvatarFallback>{name?.split(' ').map((n: any[]) => n[0]).join('')}</AvatarFallback>
       </Avatar>
       <div>
-        <p className="font-medium">{name}</p>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <p className="font-medium max-w-[100px] truncate">{name}</p>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className='font-medium'>{name}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
         <p className="text-xs text-muted-foreground">Joined {createdAt}</p>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { CellPropsTask } from '@/components/pages/tasks/task-cell';
 import SocialTypeCol from '@/components/pages/tasks/task-social';
 import TypeCol from '@/components/pages/tasks/task-type';
-import { SocialTaskTypeEnum, TaskTypeEnum } from '@/enums/task.enums';
+import { SocialTaskTypeEnum, TaskFrequencyEnum, TaskTypeEnum } from '@/enums/task.enums';
 import { Users, Share2, Gamepad2, Rss, } from 'lucide-react';
 import {  FileText, CheckSquare, Award, Repeat, Circle, Trash, MoreHorizontal } from 'lucide-react';
 import { FaTasks } from 'react-icons/fa';
@@ -206,47 +206,56 @@ export const TABLE_HEADERS_TASK = [
   },
 ];
 
+
 export const TYPE_OPTIONS = [
-  { value: 'social', label: 'Social' },
-  { value: 'referral', label: 'Referral' },
-  { value: 'game', label: 'Game' },
-  { value: 'achievement', label: 'Achievement' },
-  { value: 'other', label: 'Other' }
+  { value: TaskTypeEnum.SOCIAL, label: 'Social' },
+  { value: TaskTypeEnum.REFERRAL, label: 'Referral' },
+  { value: TaskTypeEnum.GAME, label: 'Game' },
+  { value: TaskTypeEnum.ACHIEVEMENT, label: 'Achievement' },
+  { value: TaskTypeEnum.OTHER, label: 'Other' },
 ];
+export const FREQUENCY_OPTIONS = [
+  { value: TaskFrequencyEnum.DAILY, label: 'daily' },
+  { value: TaskFrequencyEnum.WEEKLY, label: 'weekly' },
+  { value: TaskFrequencyEnum.MONTHLY, label: 'monthly' },
+  { value: TaskFrequencyEnum.PERMANENT, label: 'permanent' },
+];
+
 export const SOCIAL_TYPE_OPTIONS = [
-  { value: 'youtube_subscribe', label: 'Youtube Subscribe' },
-  { value: 'youtube_watch', label: 'Youtube Watch' },
-  { value: 'youtube_like', label: 'Youtube Like' },
-  { value: 'youtube_comment', label: 'Youtube Comment' },
-  { value: 'tiktok_watch', label: 'Tiktok Watch' },
-  { value: 'tiktok_like', label: 'Tiktok Like' },
-  { value: 'tiktok_comment', label: 'Tiktok Comment' },
-  { value: 'tiktok_share', label: 'Tiktok Share' },
-  { value: 'x_follow', label: 'X Follow' },
-  { value: 'x_like', label: 'X Like' },
-  { value: 'x_comment', label: 'X Comment' },
-  { value: 'x_share', label: 'X Share' },
-  { value: 'facebook_like', label: 'Facebook Like' },
-  { value: 'facebook_share', label: 'Facebook Share' },
-  { value: 'instagram_follow', label: 'Instagram Follow' },
-  { value: 'instagram_like', label: 'Instagram Like' },
-  { value: 'instagram_comment', label: 'Instagram Comment' },
-  { value: 'instagram_share', label: 'Instagram Share' },
-  { value: 'telegram_join', label: 'Telegram Join' },
-  { value: 'visit_website', label: 'Visit Website' }
-]
+  { value: SocialTaskTypeEnum.YOUTUBE_SUBSCRIBE, label: 'Youtube Subscribe' },
+  { value: SocialTaskTypeEnum.YOUTUBE_WATCH, label: 'Youtube Watch' },
+  { value: SocialTaskTypeEnum.YOUTUBE_LIKE, label: 'Youtube Like' },
+  { value: SocialTaskTypeEnum.YOUTUBE_COMMENT, label: 'Youtube Comment' },
+  { value: SocialTaskTypeEnum.TIKTOK_WATCH, label: 'Tiktok Watch' },
+  { value: SocialTaskTypeEnum.TIKTOK_LIKE, label: 'Tiktok Like' },
+  { value: SocialTaskTypeEnum.TIKTOK_COMMENT, label: 'Tiktok Comment' },
+  { value: SocialTaskTypeEnum.TIKTOK_SHARE, label: 'Tiktok Share' },
+  { value: SocialTaskTypeEnum.X_FOLLOW, label: 'X Follow' },
+  { value: SocialTaskTypeEnum.X_LIKE, label: 'X Like' },
+  { value: SocialTaskTypeEnum.X_COMMENT, label: 'X Comment' },
+  { value: SocialTaskTypeEnum.X_SHARE, label: 'X Share' },
+  { value: SocialTaskTypeEnum.FACEBOOK_LIKE, label: 'Facebook Like' },
+  { value: SocialTaskTypeEnum.FACEBOOK_SHARE, label: 'Facebook Share' },
+  { value: SocialTaskTypeEnum.INSTAGRAM_FOLLOW, label: 'Instagram Follow' },
+  { value: SocialTaskTypeEnum.INSTAGRAM_LIKE, label: 'Instagram Like' },
+  { value: SocialTaskTypeEnum.INSTAGRAM_COMMENT, label: 'Instagram Comment' },
+  { value: SocialTaskTypeEnum.INSTAGRAM_SHARE, label: 'Instagram Share' },
+  { value: SocialTaskTypeEnum.TELEGRAM_JOIN, label: 'Telegram Join' },
+  { value: SocialTaskTypeEnum.VISIT_WEBSITE, label: 'Visit Website' },
+];
+
 export const getTaskCellConfigs = (
   task: Task,
   utils: {
     handleDelete: (task: Task) => void;
     setCurrent: (task: Task) => void;
     setEditOpen: (open: boolean) => void;
-    setIsViewTaskOpen: (open: boolean) => void;
+    setIsViewOpen: (open: boolean) => void;
     getStatusColor: (active: boolean) => string;
     formatDate: (date?: string) => string;
   }
 ): CellPropsTask[] => {
-  const { handleDelete, setCurrent, setEditOpen, getStatusColor, formatDate,setIsViewTaskOpen } = utils;
+  const { handleDelete, setCurrent, setEditOpen, getStatusColor, formatDate,setIsViewOpen } = utils;
 
   return [
     {
@@ -292,7 +301,7 @@ export const getTaskCellConfigs = (
       },
       onView: () => {
         setCurrent(task);
-        setIsViewTaskOpen(true);
+        setIsViewOpen(true);
       },
       onDelete: () => handleDelete(task),
     },

@@ -7,6 +7,7 @@ export const routesPaths = {
     // OVERVIEW: '/overview',
     CALENDAR: '/calendar',
     TASKS: '/tasks',
+    GAMES: '/games',
     ANALYTIC: '/analytic',
     USERS: '/users',
     SETTINGS: '/settings',

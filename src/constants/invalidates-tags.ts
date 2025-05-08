@@ -5,4 +5,5 @@ export enum InvalidatesTagsEnum {
     MESSAGES = "Messages",
     USER="User",
     TASK="Task",
+    GAME="Game",
 }
