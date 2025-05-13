@@ -1,44 +1,88 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { LoadingSpinner } from "@/components/spinner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, CreditCard, DollarSign, Users, ArrowUpRight
-  // , ArrowDownRight 
+import { useRecentLoginQuery, useRevenueUserQuery, useRoleUserQuery, useSummaryUserQuery, useWeeklyActiveQuery } from "@/services/dashboard";
+import { formatDistanceToNow, parseISO } from "date-fns";
+import {  Users, ArrowUpRight, ArrowDownRight
 } from "lucide-react";
 import { Bar, BarChart, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from "recharts";
 
 const Overview = () => {
   // Mock data for charts
-  const revenueData = [
-    { name: "Jan", total: 1200 },
-    { name: "Feb", total: 1900 },
-    { name: "Mar", total: 1500 },
-    { name: "Apr", total: 2200 },
-    { name: "May", total: 2800 },
-    { name: "Jun", total: 3200 },
-    { name: "Jul", total: 3800 },
-  ];
+  const {data:summaryUser,isLoading}=useSummaryUserQuery({})
+  const {data:revenueUser}=useRevenueUserQuery({})
+  const {data:roleUser}=useRoleUserQuery({})
+  const {data:weeklyActive}=useWeeklyActiveQuery({})
+  const {data:recentLogin}=useRecentLoginQuery({})
+  if (isLoading || !summaryUser || !revenueUser || !roleUser || !weeklyActive || !recentLogin) {
+    return <p><LoadingSpinner/></p>;
+  }
+  const revenueData = revenueUser?.data? revenueUser?.data.map((item:any) => ({
+    name: item.month,
+    total: item.totalPointsBalance["$numberDecimal"] ? parseFloat(item.totalPointsBalance["$numberDecimal"]) : item.totalPointsBalance,
+  })) :[];
 
-  const salesData = [
-    { name: "Mon", total: 120 },
-    { name: "Tue", total: 160 },
-    { name: "Wed", total: 180 },
-    { name: "Thu", total: 190 },
-    { name: "Fri", total: 220 },
-    { name: "Sat", total: 150 },
-    { name: "Sun", total: 90 },
-  ];
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const pieData = [
-    { name: "Basic", value: 540, color: "#0ea5e9" },
-    { name: "Pro", value: 720, color: "#8b5cf6" },
-    { name: "Enterprise", value: 480, color: "#f43f5e" },
-  ];
+  const salesData =weeklyActive.data ?  weeklyActive?.data.map((item:any) => {
+    const date = new Date(item.date);
+    const dayName = dayNames[date.getDay()];
+    return {
+      name: dayName,
+      total: item.activeUserCount,
+    };
+  }):[];
 
-  const cardsData = [
-    { title: "Total Revenue", value: "+20.1% from last month", color: "bg-blue-100 dark:bg-blue-900", icon: <div className='bg-[#c2e6fe] rounded-full p-2'><DollarSign className="h-4 w-4  text-gray-600 dark:text-gray-400" /></div>  },
-    { title: "Subscriptions", value: "+12.2% from last month", color: "bg-green-100 dark:bg-green-900", icon: <div className='bg-[#b5f4cf] rounded-full p-2'><Users className="h-4 w-4 text-gray-600 dark:text-gray-400" /></div>  },
-    { title: "Total Sales", value: "-4.5% from last week", color: "bg-red-100 dark:bg-red-900", icon: <div className='bg-[#e7d5ff] rounded-full p-2'><CreditCard className="h-4 w-4 text-gray-600 dark:text-gray-400" /></div> },
-    { title: "Active Now", value: "+7.2% from average", color: "bg-yellow-100 dark:bg-yellow-900", icon: <div className='bg-[#f5b4ab] rounded-full p-2'><Activity className="h-4 w-4 text-gray-600 dark:text-gray-400" /></div>  },
-  ]
+  const pieData =roleUser?.data? roleUser?.data.map((item:any) => ({
+    name: item.role.charAt(0).toUpperCase() + item.role.slice(1),
+    value: item.count,
+    color: item.role === "user" ? "#0ea5e9" : item.role === "admin" ? "#8b5cf6" : "#f43f5e",
+  })):[];
+
+const getColor = (value: number) => {
+  if (value > 0) return "text-green-600";
+  if (value < 0) return "text-red-600";
+  return "text-gray-500";
+};
+const cardsData = summaryUser?.data
+  ? [
+      {
+        title: "Total Users",
+        value: summaryUser.data.totalUsers.value,
+        changeMonth: summaryUser.data.totalUsers.changeMonth,
+        changeWeek: summaryUser.data.totalUsers.changeWeek,
+        icon: <Users className="h-4 w-4" />,
+      },
+      {
+        title: "Active Users",
+        value: summaryUser.data.activeUsers.value,
+        changeMonth: summaryUser.data.activeUsers.changeMonth,
+        changeWeek: summaryUser.data.activeUsers.changeWeek,
+        icon: <Users className="h-4 w-4" />,
+      },
+      {
+        title: "New Users This Week",
+        value: summaryUser.data.newUsersThisWeek.value,
+        changeMonth: summaryUser.data.newUsersThisWeek.changeMonth,
+        changeWeek: summaryUser.data.newUsersThisWeek.changeWeek,
+        icon: <Users className="h-4 w-4" />,
+      },
+      {
+        title: "Active Today",
+        value: summaryUser.data.activeUsersToday.value,
+        changeMonth: summaryUser.data.activeUsersToday.changeMonth,
+        changeWeek: summaryUser.data.activeUsersToday.changeWeek,
+        icon: <Users className="h-4 w-4" />,
+      },
+    ].map((item) => ({
+      ...item,
+      displayMonth: `${item.changeMonth > 0 ? "+" : ""}${item.changeMonth}%`,
+      displayWeek: `${item.changeWeek > 0 ? "+" : ""}${item.changeWeek}%`,
+      colorMonth: getColor(item.changeMonth),
+      colorWeek: getColor(item.changeWeek),
+    }))
+  : [];
 
   return (
     <div className="flex flex-col p-6 space-y-6 text-gray-100 dark:text-gray-100">
@@ -49,24 +93,39 @@ const Overview = () => {
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {cardsData.map(cardData => (
-        <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-800 dark:text-gray-200">
-            {cardData.title}
-          </CardTitle>
-          {cardData.icon}
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-gray-900 dark:text-gray-50">+573</div>
-          <p className="text-xs text-green-500 flex items-center mt-1">
-            <ArrowUpRight className="h-3 w-3 mr-1" />
-            {cardData.value}
-          </p>
-        </CardContent>
-      </Card>
+        {cardsData.map((cardData, idx) => (
+          <Card key={idx} className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                {cardData.title}
+              </CardTitle>
+              {cardData.icon}
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-50"> + {cardData.value}</div>
+
+              <p className={`text-xs flex items-center mt-1 ${cardData.colorMonth}`}>
+                {cardData.changeMonth >= 0 ? (
+                  <ArrowUpRight className="h-3 w-3 mr-1" />
+                ) : (
+                  <ArrowDownRight className="h-3 w-3 mr-1" />
+                )}
+                Month: {cardData.displayMonth}
+              </p>
+
+              <p className={`text-xs flex items-center mt-1 ${cardData.colorWeek}`}>
+                {cardData.changeWeek >= 0 ? (
+                  <ArrowUpRight className="h-3 w-3 mr-1" />
+                ) : (
+                  <ArrowDownRight className="h-3 w-3 mr-1" />
+                )}
+                Week: {cardData.displayWeek}
+              </p>
+            </CardContent>
+          </Card>
         ))}
       </div>
+
 
       {/* Charts Section */}
       <Tabs defaultValue="overview" className="space-y-4">
@@ -102,7 +161,7 @@ const Overview = () => {
             {/* Subscription Distribution - Pie Chart */}
             <Card className="col-span-3 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
               <CardHeader>
-                <CardTitle className="text-gray-800 dark:text-gray-200">Subscription Types</CardTitle>
+                <CardTitle className="text-gray-800 dark:text-gray-200">Role Users</CardTitle>
                 <CardDescription className="text-gray-600 dark:text-gray-400">
                   Distribution of subscription plans
                 </CardDescription>
@@ -120,7 +179,7 @@ const Overview = () => {
                       dataKey="value"
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
-                      {pieData.map((entry, index) => (
+                      {pieData.map((entry:any, index:any) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
@@ -161,29 +220,30 @@ const Overview = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="flex items-center gap-4 rounded-lg border p-3 dark:border-gray-700">
-                    <div className={`rounded-full p-2 ${i % 2 === 0 ? 'bg-blue-100 dark:bg-blue-900' : 'bg-green-100 dark:bg-green-900'}`}>
-                      {i % 2 === 0 ? 
-                        <Users className={`h-4 w-4 text-blue-600 dark:text-blue-400`} /> : 
-                        <DollarSign className={`h-4 w-4 text-green-600 dark:text-green-400`} />
-                      }
+                {recentLogin.data.map((user:any) => (
+                  <div
+                    key={user.userId}
+                    className="flex items-center gap-4 rounded-lg border p-3 dark:border-gray-700"
+                  >
+                    <div className="rounded-full p-2 bg-blue-100 dark:bg-blue-900">
+                      <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="flex-1 space-y-1">
                       <p className="text-sm font-medium leading-none text-gray-800 dark:text-gray-200">
-                        {i % 2 === 0 ? 'New subscription' : 'Payment received'}
+                        User login
                       </p>
                       <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {i % 2 === 0 ? 'User #23456 subscribed to Pro plan' : 'User #12345 paid $99.00'}
+                        {user.username} just logged in
                       </p>
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {i * 10} minutes ago
+                      {formatDistanceToNow(parseISO(user.lastLoginAt), { addSuffix: true })}
                     </div>
                   </div>
                 ))}
               </div>
             </CardContent>
+
           </Card>
         </TabsContent>
         

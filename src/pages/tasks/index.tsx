@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
-
   Download,
   ListPlus,
   RefreshCw,
@@ -27,8 +26,6 @@ import { AdminTable } from "@/components/table-admin";
 import { debounce } from "lodash";
 import { getStatusColor } from "@/utils";
 import { LoadingSpinner } from "@/components/spinner";
-import { ConfirmDeleteDialog } from "../users/dialog-delete";
-import DialogEditTask from "./dialog-edit";
 import { getTaskCellConfigs, SOCIAL_TYPE_OPTIONS, TABLE_HEADERS_TASK, TYPE_OPTIONS } from "@/constants/tasks";
 import GenericSelectContent from "@/components/select-table";
 import { ROW_OPTIONS } from "@/constants";
@@ -36,13 +33,15 @@ import { STATUS_OPTIONS } from "@/constants/user";
 import SearchInput from "@/components/input-search";
 import TableTaskGenericCell from "@/components/pages/tasks/task-cell";
 import { SocialTaskTypeEnum, TaskFrequencyEnum, TaskTypeEnum } from "@/enums/task.enums";
-import DialogCreateTask from "./dialog-create";
 import { toast } from "sonner";
-import DialogViewTask from "./dialog-view";
+import DialogEditTask from "@/components/pages/tasks/dialog-edit";
+import DialogCreateTask from "@/components/pages/tasks/dialog-create";
+import DialogViewTask from "@/components/pages/tasks/dialog-view";
+import { ConfirmDeleteDialog } from "@/components/pages/user/dialog-delete";
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 const Tasks = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
