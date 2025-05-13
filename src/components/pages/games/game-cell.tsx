@@ -35,11 +35,9 @@ type CellTypeGame =
     children?: React.ReactNode;
     getStatusColor?: (active: boolean) => string;
       onEdit?: () => void;
-      
     onView?: () => void;
     onDelete?: () => void;
 }
-  
 const renderTitle = ({ children }: Omit<CellPropsGame, 'type' | 'value'>) => (
   <TableCell className="font-medium">{children}</TableCell>
 );

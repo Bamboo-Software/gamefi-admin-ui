@@ -5,10 +5,12 @@ import { authApi } from '@/services/auth';
 import authReducer ,{ namespace as authNamespace } from './auth/authSlice';
 import themeReducer, { namespace as themeNamespace } from './theme/themeSlice';
 
-import { conversationsApi } from '@/services/conversations';
 import { userApi } from '@/services/users';
 import { taskApi } from '@/services/tasks';
 import { gameApi } from '@/services/games';
+import { dashboardApi } from '@/services/dashboard';
+import { chatApi } from '@/services/chats';
+import { uploadApi } from '@/services/upload';
 
 export const listenerMiddleware = createListenerMiddleware({
   onError: () => console.error('An error listener middleware occurred'),
@@ -18,11 +20,13 @@ export const listenerMiddleware = createListenerMiddleware({
 const reducer = {
   [authNamespace]: authReducer,
   [themeNamespace]: themeReducer,
-  [conversationsApi.reducerPath]: conversationsApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
   [taskApi.reducerPath]: taskApi.reducer,
   [gameApi.reducerPath]: gameApi.reducer,
+  [dashboardApi.reducerPath]: dashboardApi.reducer,
+  [chatApi.reducerPath]: chatApi.reducer,
+  [uploadApi.reducerPath]: uploadApi.reducer,
 };
 
 export const store = configureStore({
@@ -31,10 +35,12 @@ export const store = configureStore({
     getDefaultMiddleware()
     .concat(
       authApi.middleware,
-      conversationsApi.middleware,
       userApi.middleware,
       taskApi.middleware,
       gameApi.middleware,
+      dashboardApi.middleware,
+      chatApi.middleware,
+      uploadApi.middleware,
     )
     .prepend(listenerMiddleware.middleware)
 });

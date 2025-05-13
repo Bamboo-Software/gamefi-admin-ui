@@ -20,17 +20,19 @@ import Help from './pages/help';
 import Calendar from './pages/calendar';
 import Tasks from './pages/tasks';
 import Games from './pages/games';
+import Chats from './pages/chat';
 
 const {
   ROOT,
-  AUTH, 
+  AUTH,
   CALENDAR,
   TASKS,
   ANALYTIC,
   USERS,
   SETTINGS,
   HELP,
-  GAMES
+  GAMES,
+  CHAT
 } = routesPaths;
 
 const PrivateRoute = ({ children }: {children: React.ReactNode}) => {
@@ -93,6 +95,7 @@ const routes = createBrowserRouter([
       { path: USERS, element: <Users/> },
       { path: SETTINGS, element: <Settings/> },
       { path: HELP, element: <Help/> },
+      { path: CHAT, element: <Chats/> },
     ],
   },
   {

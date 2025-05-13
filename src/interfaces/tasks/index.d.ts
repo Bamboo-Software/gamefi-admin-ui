@@ -17,5 +17,6 @@ declare global {
     deletedAt: string;
     updatedAt: string;
     }
+    
 }
 export{}

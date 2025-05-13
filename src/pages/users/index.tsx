@@ -16,8 +16,6 @@ import { useDeleteUserMutation, useGetAllUsersQuery, useUpdateUserMutation } fro
 import { LoadingSpinner } from "@/components/spinner";
 import { debounce } from "lodash";
 import SearchInput from "@/components/input-search";
-import DialogEditUser from "./dialog-edit";
-import { ConfirmDeleteDialog } from "./dialog-delete";
 import { ROW_OPTIONS } from "@/constants";
 import GenericSelectContent from "@/components/select-table";
 import { getUserCellConfigs, ROLE_OPTIONS, STATUS_OPTIONS, TABLE_HEADERS } from "@/constants/user";
@@ -26,6 +24,8 @@ import { AdminTable } from "@/components/table-admin";
 import TableUserGenericCell from "@/components/pages/user/user-cell";
 import { PageHeading } from "@/components/page-heading";
 import { SectionHeader } from "@/components/section-header";
+import DialogEditUser from "@/components/pages/user/dialog-edit";
+import { ConfirmDeleteDialog } from "@/components/pages/user/dialog-delete";
 
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 

@@ -11,6 +11,7 @@ export const routesPaths = {
     ANALYTIC: '/analytic',
     USERS: '/users',
     SETTINGS: '/settings',
+    CHAT: '/chats',
     HELP: '/help',
 };
 

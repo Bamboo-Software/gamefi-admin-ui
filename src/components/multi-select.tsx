@@ -1,11 +1,22 @@
-import { DIFFICULTY_OPTIONS } from "@/constants/games";
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-const MultiSelectField = ({ selected, onChange }: {
+type Option = {
+  label: string;
+  value: string;
+};
+
+const MultiSelectField = ({
+  selected,
+  onChange,
+  options,
+  placeholder = "Select options",
+}: {
   selected: string[];
   onChange: (value: string[]) => void;
+  options: Option[];
+  placeholder?: string;
 }) => {
   const toggleValue = (val: string) => {
     if (selected.includes(val)) {
@@ -20,13 +31,16 @@ const MultiSelectField = ({ selected, onChange }: {
       <PopoverTrigger asChild>
         <Button variant="outline" className="w-full justify-start">
           {selected.length > 0
-            ? selected.join(", ")
-            : "Select difficulty levels"}
+            ? options
+                ?.filter((opt) => selected.includes(opt.value))
+                ?.map((opt) => opt.label)
+                ?.join(", ")
+            : placeholder}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full">
         <div className="flex flex-col gap-2">
-          {DIFFICULTY_OPTIONS.map((option) => (
+          {options?.map((option) => (
             <label key={option.value} className="flex items-center gap-2">
               <Checkbox
                 checked={selected.includes(option.value)}
@@ -40,4 +54,5 @@ const MultiSelectField = ({ selected, onChange }: {
     </Popover>
   );
 };
-export default MultiSelectField
+
+export default MultiSelectField;

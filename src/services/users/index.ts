@@ -19,8 +19,8 @@ export const userApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getAllUsers: builder.query<ApiResponse<PaginatedResponse<User[]>>, { page?: number,q?:string,email?:string,limit?:number,role?:string,active?:string,offset?:number,orderField?:string,orderDirection?:string,username?:string }>({
-      query: ({ page, limit, offset,q,orderField,orderDirection,username,role,active}) => ({
+    getAllUsers: builder.query<ApiResponse<PaginatedResponse<User[]>>, { page?: number,q?:string,email?:string,limit?:number,role?:string,active?:string,offset?:number,orderField?:string,orderDirection?:string,username?:string,isBot?:boolean }>({
+      query: ({ page, limit, offset,q,orderField,orderDirection,username,role,active,isBot}) => ({
         url: `${endpoint}/users`,
         method: "GET",
         params: {
@@ -28,6 +28,7 @@ export const userApi = createApi({
           limit,
           offset,
           username,
+          isBot,
           q,
           orderField,
           orderDirection,

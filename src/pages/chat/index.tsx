@@ -21,53 +21,45 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react";
-import { useCreateGameMutation, useCreatePrizeGameMutation, useCreatePrizeLotteryMutation, useDeleteGameMutation, useGetAllGamesQuery, useUpdateGameMutation } from "@/services/games";
+import { useCreateChatMutation, useDeleteChatMutation, useGetAllChatsQuery, useUpdateChatMutation } from "@/services/chats";
 import { AdminTable } from "@/components/table-admin";
 import { debounce } from "lodash";
 import { LoadingSpinner } from "@/components/spinner";
 import GenericSelectContent from "@/components/select-table";
 import { ROW_OPTIONS } from "@/constants";
-import { STATUS_OPTIONS } from "@/constants/user";
 import SearchInput from "@/components/input-search";
 import { toast } from "sonner";
 import { PageHeading } from "@/components/page-heading";
 import { SectionHeader } from "@/components/section-header";
 import { getStatusColor } from "@/utils";
-import { CATEGORY_OPTIONS, getGameCellConfigs, TABLE_HEADERS_GAME } from "@/constants/games";
-import TableGameGenericCell from "@/components/pages/games/game-cell";
-import DialogEditGame from "@/components/pages/games/dialog-edit";
-import { ConfirmDeleteDialog } from "@/components/pages/games/dialog-delete";
-import DialogCreateGame from "@/components/pages/games/dialog-create-game";
-import DialogViewGame from "@/components/pages/games/dialog-view";
-import DialogCreatePrize from "@/components/pages/games/dialog-create-prize-game";
-import DialogCreatePrizeLottery from "@/components/pages/games/dialog-create-prize-lottery";
+import { CHAT_STATUS_OPTIONS, CHAT_TYPE_OPTIONS, getChatCellConfigs, TABLE_HEADERS_CHAT } from "@/constants/chat";
+import TableChatGenericCell from "@/components/pages/chat/chat-cell";
+import DialogCreateChat from "@/components/pages/chat/dialog-create";
+import DialogViewChat from "@/components/pages/chat/dialog-view";
+import DialogEditChat from "@/components/pages/chat/dialog-edit";
+import ConfirmDeleteDialog from "@/components/pages/chat/dialog-delete";
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
-const Games = () => {
-  const [games, setGames] = useState<Game[]>([]);
+const Chats = () => {
+  const [chats, setChats] = useState<Chat[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [total, setTotal] = useState(0);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "ASC" | "DESC" } | null>(null);
-  const [selectedGames, setSelectedGames] = useState<string[]>([]);
-  //filter
+  const [selectedChats, setSelectedChats] = useState<string[]>([]);
   const [filters, setFilters] = useState({
-    active: "",
-    category: "",
+    status: "",
+    type: "",
   });
-  //view
-  const [currentGame, setCurrentGame] = useState<Game | null>(null);
 
-  const [isEditGameOpen, setIsEditGameOpen] = useState(false);
+  const [currentChat, setCurrentChat] = useState<Chat | null>(null);
+
+  const [isEditChatOpen, setIsEditChatOpen] = useState(false);
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
-  const [isCreateGameOpen, setIsCreateGameOpen] = useState(false);
-  const [isCreatePrizeGameOpen, setIsCreatePrizeGameOpen] = useState(false);
-  const [isCreatePrizeLotteryOpen, setIsCreatePrizeLotteryOpen] = useState(false);
-  const [isViewGameOpen, setIsViewGameOpen] = useState(false);
-  const [createGame] = useCreateGameMutation();
-  const [createPrizeGame] = useCreatePrizeGameMutation();
-  const [createPrizeLottery] = useCreatePrizeLotteryMutation();
+  const [isCreateChatOpen, setIsCreateChatOpen] = useState(false);
+  const [isViewChatOpen, setIsViewChatOpen] = useState(false);
+  const [createChat] = useCreateChatMutation();
   const debouncedSetSearchTerm = useMemo(
         () => debounce((value: string) => setDebouncedSearchTerm(value), 150),
         []
@@ -79,8 +71,8 @@ const Games = () => {
       offset: (currentPage - 1) * itemsPerPage,
       title: debouncedSearchTerm,
       q: debouncedSearchTerm,
-      active: filters.active,
-      category: filters.category,
+      status: filters.status,
+      type: filters.type,
       orderField: sortConfig?.key ?? "createdAt",
       orderDirection: sortConfig?.direction ?? "ASC",
     };
@@ -91,25 +83,25 @@ const Games = () => {
     );
     return filteredParams;
   }, [currentPage,filters, itemsPerPage, debouncedSearchTerm, sortConfig]);
-  const { data, isLoading } = useGetAllGamesQuery(queryParams, {
+  const { data, isLoading } = useGetAllChatsQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
-  const [updateGame] = useUpdateGameMutation();
-  const [deleteGameMutation] = useDeleteGameMutation();
-  const handleOpenDeleteDialog = (Game: Game) => {
-    setCurrentGame(Game);
+  const [updateChat] = useUpdateChatMutation();
+  const [deleteChatMutation] = useDeleteChatMutation();
+  const handleOpenDeleteDialog = (Chat: Chat) => {
+    setCurrentChat(Chat);
     setDialogDeleteOpen(true);
   };
   const handleConfirmDelete = async () => {
-    if (!currentGame) return;
+    if (!currentChat) return;
     try {
-      await deleteGameMutation({ id: currentGame._id, removePrizes: true }).unwrap();
+      await deleteChatMutation(currentChat._id).unwrap();
 
     } catch {
-      toast.error("Error while deleting Game");
+      toast.error("Error while deleting Chat");
     } finally {
       setDialogDeleteOpen(false);
-      setCurrentGame(null);
+      setCurrentChat(null);
     }
   };
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,8 +109,8 @@ const Games = () => {
       setSearchTerm(value);
       debouncedSetSearchTerm(value);
     }, [debouncedSetSearchTerm]);
-  const handleSelectGame = useCallback((userId: string) => {
-      setSelectedGames((prev) =>
+  const handleSelectChat = useCallback((userId: string) => {
+      setSelectedChats((prev) =>
         prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
       );
     }, []);
@@ -130,79 +122,54 @@ const Games = () => {
         return { key, direction: "ASC" };
       });
     }, []);
-    const handleEditGame = useCallback(
+    const handleEditChat = useCallback(
       async (formData: any) => {
-        if (!currentGame) return;
+        if (!currentChat) return;
         try {
-          await updateGame({
-            id: currentGame._id,
+          await updateChat({
+            id: currentChat._id,
             data: formData,
           }).unwrap();
-          setCurrentGame(null);
-          setIsEditGameOpen(false);
+          setCurrentChat(null);
+          setIsEditChatOpen(false);
         } catch (err) {
-          console.error("Update game failed:", err);
+          console.error("Update chat failed:", err);
         }
       },
-      [currentGame, updateGame, setIsEditGameOpen]
+      [currentChat, updateChat, setIsEditChatOpen]
     );
-    const memoizedGames = useMemo(() => games, [games]);
+    const memoizedChats = useMemo(() => chats, [chats]);
 
   const handleDeleteSelected = () => {
-    setGames(games.filter(Game => !selectedGames.includes(Game._id)));
-    setSelectedGames([]);
+    setChats(chats.filter(Chat => !selectedChats.includes(Chat._id)));
+    setSelectedChats([]);
   };
-  const handleCreateGame = async (data: any) => {
+  const handleCreateChat = async (data: any) => {
+    console.log("🚀 ~ handleCreateChat ~ data:", data)
     try {
-      await createGame(data).unwrap();
-      toast.success("Game created successfully!");
-      setIsCreateGameOpen(false);
+      await createChat(data).unwrap();
+      toast.success("Chat created successfully!");
+      setIsCreateChatOpen(false);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create Game!");
+      toast.error("Failed to create Chat!");
     }
   };
-  const handleCreatePrizeGame = async (data: any) => {
-    try {
-      await createPrizeGame(data).unwrap();
-      toast.success("Game created successfully!");
-      setIsCreatePrizeGameOpen(false);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to create Game!");
-    }
-  };
-  const handleCreatePrizeLottery = async (data: any) => {
-    try {
-      await createPrizeLottery(data).unwrap();
-      toast.success("Game created successfully!");
-      setIsCreatePrizeLotteryOpen(false);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to create Game!");
-    }
-  };
-  const handleOpenCreateGameDialog = () => {
-    setIsCreateGameOpen(true);
-  };
-  const handleOpenCreatePrizeGameDialog = () => {
-    setIsCreatePrizeGameOpen(true);
-  };
-  const handleOpenCreatePrizeLotteryDialog = () => {
-    setIsCreatePrizeLotteryOpen(true);
+  const handleOpenCreateChatDialog = () => {
+    setIsCreateChatOpen(true);
   };
   const handleActiveChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, active: value }));
+    setFilters((prev) => ({ ...prev, status: value }));
   };
   const handleCategoryChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, category: value }));
+    setFilters((prev) => ({ ...prev, type: value }));
   };
 useEffect(() => {
     if (data?.data?.data) {
-      setGames(data.data.data);
+      setChats(data.data.data);
       setTotal(data.data.total);
     } else {
-      setGames([]);
+      setChats([]);
       setTotal(0);
     }
 }, [data]);
@@ -213,28 +180,20 @@ useEffect(() => {
       }
   }, [total, itemsPerPage, currentPage]);
   const memoizedGetCellConfigs = useCallback(
-    (game: Game, utils: any) => getGameCellConfigs(game, utils),
+    (chat: Chat, utils: any) => getChatCellConfigs(chat, utils),
     []
   );
   return (
     <div className="p-6 space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <PageHeading
-          title="Games Management"
-          subtitle="Manage your games"
+          title="Chats Management"
+          subtitle="Manage your chats"
       />
         <div className="flex items-center gap-2">
-          <Button  onClick={handleOpenCreatePrizeLotteryDialog} className="cursor-pointer">
-              <ListPlus className="h-4 w-4 mr-2" />
-                Add Prize Lottery
-          </Button>
-          <Button  onClick={handleOpenCreatePrizeGameDialog} className="cursor-pointer">
+          <Button onClick={handleOpenCreateChatDialog} className="cursor-pointer">
             <ListPlus className="h-4 w-4 mr-2" />
-              Add Prize Game
-          </Button>
-          <Button onClick={handleOpenCreateGameDialog} className="cursor-pointer">
-            <ListPlus className="h-4 w-4 mr-2" />
-              Add Game
+              Add Chat
           </Button>
           <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
@@ -245,23 +204,23 @@ useEffect(() => {
       <Card>
         <CardHeader className="pb-3">
         <SectionHeader
-          title="Games"
-          description="Manage your organization's games, game prize, and game description."
+          title="Chats"
+          description="Manage your organization's chats, chat prize, and chat description."
         />
           <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mt-4">
               <div className="flex gap-4">
-                <SearchInput placeholder={"Search Game..."} searchTerm={searchTerm} onChange={handleChange} />
-                <Select value={filters.active} onValueChange={handleActiveChange}>
+                <SearchInput placeholder={"Search Chat..."} searchTerm={searchTerm} onChange={handleChange} />
+                <Select value={filters.status} onValueChange={handleActiveChange}>
                   <SelectTrigger className="w-[120px] font-medium cursor-pointer">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
-                  <GenericSelectContent options={STATUS_OPTIONS} />
+                  <GenericSelectContent options={CHAT_STATUS_OPTIONS} />
                 </Select>
-                <Select value={filters.category} onValueChange={handleCategoryChange}>
+                <Select value={filters.type} onValueChange={handleCategoryChange}>
                   <SelectTrigger className="w-[120px] font-medium cursor-pointer">
-                    <SelectValue placeholder="Category" />
+                    <SelectValue placeholder="Type" />
                   </SelectTrigger>
-                  <GenericSelectContent options={CATEGORY_OPTIONS} />
+                  <GenericSelectContent options={CHAT_TYPE_OPTIONS} />
                 </Select>
               </div>
               <div className="flex items-center gap-4">
@@ -273,8 +232,8 @@ useEffect(() => {
                   setDebouncedSearchTerm("");
                   setSortConfig(null);
                   setFilters({
-                    active: "",
-                    category: "",
+                    status: "",
+                    type: "",
                   })
                 }}
               >
@@ -297,9 +256,9 @@ useEffect(() => {
             </div>
         </CardHeader>
         <CardContent>
-          {selectedGames.length > 0 && (
+          {selectedChats.length > 0 && (
             <div className="bg-muted/50 p-2 rounded-md mb-4 flex items-center justify-between">
-              <p className="text-sm">{selectedGames.length} users selected</p>
+              <p className="text-sm">{selectedChats.length} users selected</p>
               <Button
                 variant="destructive"
                 size="sm"
@@ -310,21 +269,21 @@ useEffect(() => {
               </Button>
             </div>
           )}
-          <AdminTable<Game>
-            data={memoizedGames}
-            selectedUsers={selectedGames}
+          <AdminTable<Chat>
+            data={memoizedChats}
+            selectedUsers={selectedChats}
             sortConfig={sortConfig}
             isLoading={isLoading}
-            handleSelect={handleSelectGame}
+            handleSelect={handleSelectChat}
             handleDelete={handleOpenDeleteDialog}
-            setCurrent={setCurrentGame}
-            setIsEditOpen={setIsEditGameOpen}
-            setIsViewOpen={setIsViewGameOpen}
+            setCurrent={setCurrentChat}
+            setIsEditOpen={setIsEditChatOpen}
+            setIsViewOpen={setIsViewChatOpen}
             getStatusColor={getStatusColor}
             handleSort={handleSort}
             getCellConfigs={memoizedGetCellConfigs}
-            renderCell={(config, idx) => <TableGameGenericCell key={idx} {...config} />}
-            columns={TABLE_HEADERS_GAME}
+            renderCell={(config, idx) => <TableChatGenericCell key={idx} {...config} />}
+            columns={TABLE_HEADERS_CHAT}
           />
           <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-muted-foreground min-w-[200px]">
@@ -332,8 +291,8 @@ useEffect(() => {
                 <LoadingSpinner />
               ) : (
                 <>
-                  Showing {games.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
-                  {Math.min((currentPage - 1) * itemsPerPage + games.length, total)} of {total}
+                  Showing {chats.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to{" "}
+                  {Math.min((currentPage - 1) * itemsPerPage + chats.length, total)} of {total}
                 </>
               )}
             </div>
@@ -345,32 +304,30 @@ useEffect(() => {
           </div>
         </CardContent>
       </Card>
-      <DialogEditGame isEditGameOpen={isEditGameOpen} handleEditGame={handleEditGame} setIsEditGameOpen={setIsEditGameOpen} currentGame={currentGame} />
+      {currentChat && (
+        <DialogEditChat isEditChatOpen={isEditChatOpen} handleEditChat={handleEditChat} setIsEditChatOpen={setIsEditChatOpen} currentChat={currentChat} />
+      )}
       <ConfirmDeleteDialog
         open={dialogDeleteOpen}
-        username={currentGame?.title}
+        username={currentChat?.name}
         onClose={() => setDialogDeleteOpen(false)}
         onConfirm={handleConfirmDelete}
       />
-      <DialogCreateGame
-        isCreateGameOpen={isCreateGameOpen}
-        setIsCreateGameOpen={setIsCreateGameOpen}
-        handleCreateGame={handleCreateGame}
+      <DialogCreateChat
+        isCreateChatOpen={isCreateChatOpen}
+        setIsCreateChatOpen={setIsCreateChatOpen}
+        handleCreateChat={handleCreateChat}
       />
-     <DialogViewGame
-        isViewGameOpen={isViewGameOpen}
-        setIsViewGameOpen={setIsViewGameOpen}
-        currentGame={currentGame}
-      />
-      <DialogCreatePrize isCreatePrizeGameOpen={isCreatePrizeGameOpen}
-        setIsCreatePrizeGameOpen={setIsCreatePrizeGameOpen}
-        handleCreatePrizeGame={handleCreatePrizeGame}/>
-      <DialogCreatePrizeLottery isCreatePrizeLotteryOpen={isCreatePrizeLotteryOpen}
-        setIsCreatePrizeLotteryOpen={setIsCreatePrizeLotteryOpen}
-        handleCreatePrizeLottery={handleCreatePrizeLottery}
-      />
+     {currentChat && (
+      <DialogViewChat
+          isViewChatOpen={isViewChatOpen}
+          setIsViewChatOpen={setIsViewChatOpen}
+          currentChat={currentChat}
+        />
+      )}
+
     </div>
   );
 };
 
-export default Games;
+export default Chats;
