@@ -1,7 +1,7 @@
 /** Enum for Channel Type */
 export enum ChatTypeEnum {
     COMMUNITY = 'community',
-    PRIVATE = 'private',
+    // PRIVATE = 'private',
     AI = 'ai',
   }
 

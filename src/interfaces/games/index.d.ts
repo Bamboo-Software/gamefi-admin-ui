@@ -45,4 +45,8 @@ declare global {
         active?: boolean;
         metadata?: Record<string, any>;
     }
+    export interface QueryGameRequest extends QueryRequest {
+        active?: string;
+    }
+
 }

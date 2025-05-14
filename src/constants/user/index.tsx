@@ -103,11 +103,12 @@ export const getUserCellConfigs = (
     handleDelete: (user: User) => void;
     setCurrent: (user: User) => void;
     setEditOpen: (open: boolean) => void;
+    setIsViewOpen: (open: boolean) => void;
     getStatusColor: (active: boolean) => string;
     formatDate: (date?: string) => string;
   }
 ): CellPropsUser[] => {
-  const { handleDelete, setCurrent, setEditOpen, getStatusColor, formatDate } = utils;
+  const { handleDelete, setCurrent, setEditOpen, getStatusColor, formatDate,setIsViewOpen } = utils;
 
   return [
     {
@@ -151,7 +152,10 @@ export const getUserCellConfigs = (
         setCurrent(user);
         setEditOpen(true);
       },
-      // onView: () => console.log('View user'),
+      onView: () => {
+        setCurrent(user);
+        setIsViewOpen(true);
+      } ,
       onDelete: () => handleDelete(user),
     },
   ];

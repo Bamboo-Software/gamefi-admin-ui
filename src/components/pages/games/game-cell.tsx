@@ -95,8 +95,7 @@ const renderCreatedAt = (value?: string) => (
   <TableCell className="font-medium">{value}</TableCell>
 );
 
-const renderDeletedAt = ({ children ,value}: Omit<CellPropsGame, 'type'>) => {
-  console.log("🚀 ~ children:", children)
+const renderDeletedAt = ({value}: Omit<CellPropsGame, 'type'>) => {
   return <TableCell className="font-medium">{value ?? ''}</TableCell>
 	
 }

@@ -27,7 +27,7 @@ export const chatApi = createApi({
       }),
       invalidatesTags: [InvalidatesTagsEnum.CHAT],
     }),
-    getAllChats: builder.query<ApiResponse<PaginatedResponse<Chat[]>>, { page?: number,status?:string,q?:string,type?:string,limit?:number,offset?:number,orderField?:string,orderDirection?:string,username?:string }>({
+    getAllChats: builder.query<ApiResponse<PaginatedResponse<Chat[]>>,QueryChatRequest >({
       query: ({ page, limit, offset,q,type,status,
         orderField,
         orderDirection
@@ -38,7 +38,6 @@ export const chatApi = createApi({
           page,status,
           limit,
           offset,
-         
           type,
           q,
           orderField,

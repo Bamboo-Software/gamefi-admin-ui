@@ -17,6 +17,7 @@ import { GameCategoryEnum } from "@/enums/game.enum";
 import React from "react";
 import MultiSelectField from "@/components/multi-select";
 import { useGetAllGamesQuery } from "@/services/games";
+import { DIFFICULTY_OPTIONS } from "@/constants/games";
 type FormValues = {
   gameId: number;
   title: string;
@@ -68,7 +69,7 @@ const DialogCreateGame = ({
   };
   React.useEffect(() => {
     if (data?.data) {
-      const nextId = data.data?.data?.length + 1;
+      const nextId = data.data?.items?.length + 1;
       setValue("gameId", nextId);
     }
   }, [data, setValue]);
@@ -111,6 +112,7 @@ const DialogCreateGame = ({
             <MultiSelectField
               selected={watch("difficultyLevels")}
               onChange={(vals) => setValue("difficultyLevels", vals)}
+              options={DIFFICULTY_OPTIONS}
             />
           </div>
 

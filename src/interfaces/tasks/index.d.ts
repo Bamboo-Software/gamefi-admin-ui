@@ -17,6 +17,14 @@ declare global {
     deletedAt: string;
     updatedAt: string;
     }
-    
+    export interface QueryTaskRequest extends QueryRequest{
+        active?: string;
+        type?: TaskTypeEnum;
+        socialTaskType?: SocialTaskTypeEnum;
+        title?: string;
+        email?: string;
+        username?: string
+    }
+
 }
 export{}

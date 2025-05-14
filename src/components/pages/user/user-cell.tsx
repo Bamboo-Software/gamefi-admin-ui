@@ -43,7 +43,7 @@ const renderUserInfo = ({ name, avatar, createdAt }: any) => (
     <div className="flex items-center gap-2">
       <Avatar className="h-8 w-8">
         <AvatarImage src={avatar ?? 'https://github.com/shadcn.png'} alt={name} />
-        <AvatarFallback>{name?.split(' ').map((n: any[]) => n[0]).join('')}</AvatarFallback>
+        <AvatarFallback>{name?.split(' ').map((n: string[]) => n[0]).join('')}</AvatarFallback>
       </Avatar>
       <div>
       <TooltipProvider>
@@ -117,7 +117,7 @@ const renderDeletedAt = (value: string) => (
   <TableCell className="font-medium">{value}</TableCell>
 );
 
-const renderActions = ({ onEdit, onDelete }: any) => (
+const renderActions = ({ onEdit, onDelete,onView }: any) => (
   <TableCell className="text-right">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -129,7 +129,7 @@ const renderActions = ({ onEdit, onDelete }: any) => (
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem onClick={onEdit}>Edit user</DropdownMenuItem>
-        {/* {onView && <DropdownMenuItem onClick={onView}>View user</DropdownMenuItem>} */}
+        {onView && <DropdownMenuItem onClick={onView}>View user</DropdownMenuItem>}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onDelete} className="text-red-600">Delete user</DropdownMenuItem>
       </DropdownMenuContent>

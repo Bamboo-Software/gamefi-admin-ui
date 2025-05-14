@@ -15,15 +15,16 @@ import {
 } from 'react-icons/fa';
 import { MoreHorizontal } from 'lucide-react';
 import { CellPropsChat } from '@/components/pages/chat/chat-cell';
+import { ChatStatusEnum, ChatTypeEnum } from '@/enums/chat.enum';
 export const CHAT_TYPE_OPTIONS = [
-    { label: 'Community', value: 'community' },
-    { label: 'Private', value: 'private' },
-    { label: 'AI', value: 'ai' },
+    { label: ChatTypeEnum.COMMUNITY, value: 'community' },
+    // { label: ChatTypeEnum.PRIVATE, value: 'private' },
+    { label: ChatTypeEnum.AI, value: 'ai' },
   ];
   export const CHAT_STATUS_OPTIONS = [
-    { label: 'Active', value: 'active' },
-    { label: 'Archived', value: 'archived' },
-    { label: 'Deleted', value: 'deleted' },
+    { label: ChatStatusEnum.ACTIVE, value: 'active' },
+    { label: ChatStatusEnum.ARCHIVED, value: 'archived' },
+    { label: ChatStatusEnum.DELETED, value: 'deleted' },
   ];
   export const TABLE_HEADERS_CHAT = [
     {

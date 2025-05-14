@@ -57,11 +57,11 @@ const DialogEditGame = React.memo(
 
     useEffect(() => {
       if (currentGame) {
-        if (currentGame.gameId === 1 && lotteryPrizesData?.data?.data) {
+        if (currentGame.gameId === 1 && lotteryPrizesData?.data?.items) {
           reset({
             ...currentGame,
             difficultyLevels: currentGame.difficultyLevels || [],
-            prizes: lotteryPrizesData.data.data,
+            prizes: lotteryPrizesData.data.items,
           });
         } else {
           reset({

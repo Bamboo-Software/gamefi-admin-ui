@@ -40,6 +40,15 @@ declare global {
             formatDate: (date?: string) => string;
           }
         ) => CellProps[];
-      }
+  }
+  export interface QueryRequest {
+    page?: number;
+    q?: string;
+    limit?: number;
+    orderField?: string;
+    offset?: number;
+    orderDirection?: string
+  }
+
 }
 export {};

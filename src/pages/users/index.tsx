@@ -26,6 +26,8 @@ import { PageHeading } from "@/components/page-heading";
 import { SectionHeader } from "@/components/section-header";
 import DialogEditUser from "@/components/pages/user/dialog-edit";
 import { ConfirmDeleteDialog } from "@/components/pages/user/dialog-delete";
+import useUserQueryParams from "@/hooks/user/useUserQueryParams";
+import DialogViewUser from "@/components/pages/user/dialog-view";
 
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 
@@ -44,32 +46,17 @@ const Users = () => {
   const [role, setRole] = useState("");
   const [active, setActive] = useState("");
 
-  const queryParams = useMemo(() => {
-    const rawParams = {
-      page: currentPage,
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage,
-      email: debouncedSearchTerm,
-      q: debouncedSearchTerm,
-      role: role,
-      active: active,
-      username: debouncedSearchTerm,
-      orderField: sortConfig?.key ?? "createdAt",
-      orderDirection: sortConfig?.direction ?? "DESC",
-    };
-  
-    const filteredParams = Object.fromEntries(
-      Object.entries(rawParams).filter(
-        ([, value]) => value !== ""
-      )
-    );
-  
-    return filteredParams;
-  }, [currentPage, role,active, itemsPerPage, debouncedSearchTerm, sortConfig]);
-  
-  const { data, isLoading } = useGetAllUsersQuery(queryParams, {
-    refetchOnMountOrArgChange: true,
+  const queryParams = useUserQueryParams({
+    currentPage,
+    itemsPerPage,
+    debouncedSearchTerm,
+    role,
+    active,
+    sortConfig,
   });
+  const [isViewUserOpen, setIsViewUserOpen] = useState(false);
+  const { data:userData, isLoading } = useGetAllUsersQuery(queryParams);
+  console.log("🚀 ~ Users ~ userData:", userData)
   const [updateUser] = useUpdateUserMutation();
   const [deleteUserMutation] = useDeleteUserMutation();
   const debouncedSetSearchTerm = useMemo(
@@ -93,14 +80,14 @@ const Users = () => {
   };
 
   useEffect(() => {
-    if (data?.data?.data) {
-      setUsers(data.data.data);
-      setTotal(data.data.total);
+    if (userData?.data) {
+      setUsers(userData?.data?.items);
+      setTotal(userData?.data?.total);
     } else {
       setUsers([]);
       setTotal(0);
     }
-  }, [data]);
+  }, [userData]);
 
   useEffect(() => {
     const maxPage = Math.ceil(total / itemsPerPage);
@@ -139,7 +126,10 @@ const handleEditUser = useCallback(async () => {
       if (prev?.key === key) {
         return prev.direction === "ASC" ? { key, direction: "DESC" } : null;
       }
-      return { key, direction: "ASC" };
+      return prev?.key === key
+  ? { key, direction: prev.direction === "ASC" ? "DESC" : "ASC" }
+  : { key, direction: "ASC" };
+
     });
   }, []);
 
@@ -148,7 +138,14 @@ const handleEditUser = useCallback(async () => {
     setSearchTerm(value);
     debouncedSetSearchTerm(value);
   }, [debouncedSetSearchTerm]);
-
+  const handleResetFilters = () => {
+    setSearchTerm("");
+    setDebouncedSearchTerm("");
+    setSortConfig(null);
+    setRole("");
+    setActive("");
+    setCurrentPage(1);
+  };
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <div className="p-6 space-y-6">
@@ -194,13 +191,7 @@ const handleEditUser = useCallback(async () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  setSearchTerm("");
-                  setDebouncedSearchTerm("");
-                  setSortConfig(null);
-                  setRole("");
-                  setActive("");
-                }}
+                onClick={handleResetFilters}
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Reset
@@ -234,9 +225,8 @@ const handleEditUser = useCallback(async () => {
               handleSort={handleSort}
               getCellConfigs={(user, utils) => getUserCellConfigs(user, utils)}
               renderCell={(config, idx) => <TableUserGenericCell key={idx} {...config} />}
-              columns={TABLE_HEADERS} setIsViewOpen={function () {
-                throw new Error("Function not implemented.");
-              } }          />
+              columns={TABLE_HEADERS}
+              setIsViewOpen={setIsViewUserOpen} />
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground min-w-[200px]">
                 {isLoading ? (
@@ -250,7 +240,7 @@ const handleEditUser = useCallback(async () => {
               </div>
               <PaginationTable
                 currentPage={currentPage}
-                totalPages={Math.floor(total / itemsPerPage)}
+                totalPages={Math.ceil(total / itemsPerPage)}
                 setCurrentPage={setCurrentPage}
               />
             </div>
@@ -262,6 +252,11 @@ const handleEditUser = useCallback(async () => {
           username={currentUser?.username}
           onClose={() => setDialogDeleteOpen(false)}
           onConfirm={handleConfirmDelete}
+        />
+        <DialogViewUser
+          isViewUserOpen={isViewUserOpen}
+          setIsViewUserOpen={setIsViewUserOpen}
+          currentUser={currentUser}
         />
       </div>
     </Suspense>

@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "@/configs/config";
 import { InvalidatesTagsEnum } from "@/constants/invalidates-tags";
-import { SocialTaskTypeEnum, TaskTypeEnum } from "@/enums/task.enums";
 const reducerPath = "taskApi";
 const endpoint = "admin/lottery";
 
@@ -28,7 +27,7 @@ export const taskApi = createApi({
       }),
       invalidatesTags: [InvalidatesTagsEnum.TASK],
     }),
-    getAllTasks: builder.query<ApiResponse<PaginatedResponse<Task[]>>, { page?: number,q?:string,title ?:string,email?:string,limit?:number,type?:TaskTypeEnum,active?:string,socialTaskType?:SocialTaskTypeEnum,offset?:number,orderField?:string,orderDirection?:string,username?:string }>({
+    getAllTasks: builder.query<ApiResponse<PaginatedResponse<Task[]>>, QueryTaskRequest>({
       query: ({ page, limit, offset,q,socialTaskType,
         orderField,
         orderDirection,
