@@ -12,7 +12,7 @@ import React from "react";
 const DialogViewTask = React.memo(({ isViewTaskOpen, setIsViewTaskOpen, currentTask }: { isViewTaskOpen: boolean, setIsViewTaskOpen: React.Dispatch<React.SetStateAction<boolean>>, currentTask: Task | null }) => {
   return (
     <Dialog open={isViewTaskOpen} onOpenChange={setIsViewTaskOpen}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[600px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>View Task Details</DialogTitle>
           <DialogDescription>View all information about the task in readonly mode.</DialogDescription>

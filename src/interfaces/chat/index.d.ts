@@ -24,6 +24,12 @@ declare global {
         createdAt: string;
         deletedAt: string;
         updatedAt: string;
-      }
+  }
+  export interface QueryChatRequest extends QueryRequest{
+    username?: string;
+    status?: string;
+    type?: string;
+  }
+
 }
 export {}

@@ -15,7 +15,7 @@ const MultiSelectField = ({
 }: {
   selected: string[];
   onChange: (value: string[]) => void;
-  options: Option[];
+  options?: Option[];
   placeholder?: string;
 }) => {
   const toggleValue = (val: string) => {

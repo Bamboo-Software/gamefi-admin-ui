@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Dialog,
   DialogContent,
@@ -34,9 +35,7 @@ const DialogViewGame = React.memo(
     setIsViewGameOpen: React.Dispatch<React.SetStateAction<boolean>>;
     currentGame: Game | null;
   }) => {
-    console.log("🚀 ~ currentGame:", currentGame);
 
-    // Fetch prizes from API only if gameId === 1
     const { data: lotteryPrizesData, isLoading: isPrizesLoading, error: prizesError } =
       useGetAllLotteryPrizesQuery(
         {
@@ -48,7 +47,7 @@ const DialogViewGame = React.memo(
         }
       );
     const prizes = currentGame?.gameId === 1
-      ? lotteryPrizesData?.data?.data || []
+      ? lotteryPrizesData?.data?.items || []
       : currentGame?.prizes || [];
 
     return (
@@ -110,7 +109,7 @@ const DialogViewGame = React.memo(
                     Failed to load prizes.
                   </p>
                 ) : prizes.length > 0 ? (
-                  prizes.map((prize) => (
+                  prizes.map((prize:any) => (
                     <Collapsible key={prize?._id}>
                       <CollapsibleTrigger className="flex items-center justify-between w-full p-2 border rounded-md hover:bg-muted mt-2">
                         <span>

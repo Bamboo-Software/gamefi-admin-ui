@@ -91,9 +91,7 @@ const Games = () => {
     );
     return filteredParams;
   }, [currentPage,filters, itemsPerPage, debouncedSearchTerm, sortConfig]);
-  const { data, isLoading } = useGetAllGamesQuery(queryParams, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data:gameData, isLoading } = useGetAllGamesQuery(queryParams);
   const [updateGame] = useUpdateGameMutation();
   const [deleteGameMutation] = useDeleteGameMutation();
   const handleOpenDeleteDialog = (Game: Game) => {
@@ -197,15 +195,16 @@ const Games = () => {
   const handleCategoryChange = (value: string) => {
     setFilters((prev) => ({ ...prev, category: value }));
   };
+  console.log("🚀 ~ useEffect ~ gameData:", gameData)
 useEffect(() => {
-    if (data?.data?.data) {
-      setGames(data.data.data);
-      setTotal(data.data.total);
+    if (gameData?.data && gameData?.data?.items) {
+      setGames(gameData?.data?.items);
+      setTotal(gameData?.data.total);
     } else {
       setGames([]);
       setTotal(0);
     }
-}, [data]);
+}, [gameData]);
   useEffect(() => {
       const maxPage = Math.ceil(total / itemsPerPage);
       if (currentPage > maxPage && maxPage > 0) {

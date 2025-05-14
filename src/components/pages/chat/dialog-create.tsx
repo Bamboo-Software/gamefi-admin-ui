@@ -74,14 +74,14 @@ const debouncedSetParticipantSearch = useMemo(
       reset,
     } = useForm<FormValues>({
       defaultValues: {
-        type: ChatTypeEnum.PRIVATE,
+        type: ChatTypeEnum.COMMUNITY,
         participantIds: [],
       },
     });
     const onSubmit = (data: FormValues) => {
       const participantIds = data.participantIds || [];
       const dataChat =
-        chatType === ChatTypeEnum.AI || chatType === ChatTypeEnum.PRIVATE
+        chatType === ChatTypeEnum.AI || chatType === ChatTypeEnum.COMMUNITY
           ? {
               ...data,
               createdById: participantIds[0],
@@ -101,15 +101,11 @@ const debouncedSetParticipantSearch = useMemo(
     };
   }, [participantSearch]);
 
-      const { data: participantData } = useGetAllUsersQuery(participantQueryParams, {
-        refetchOnMountOrArgChange: true,
-      });
-    const { data:userBot } = useGetAllUsersQuery({isBot:true}, {
-        refetchOnMountOrArgChange: true,
-      });
+      const { data: participantData } = useGetAllUsersQuery(participantQueryParams);
+    const { data:userBot } = useGetAllUsersQuery({isBot:true});
 
       const PARTICIPANT_OPTIONS = useMemo(() => {
-        const raw = participantData?.data?.data;
+        const raw = participantData?.data?.items;
         if (!raw) return [];
         return raw.map((user) => ({
           label: user.username,
@@ -117,7 +113,7 @@ const debouncedSetParticipantSearch = useMemo(
         }));
       }, [participantData]);
       const getParticipantDisplayValue = (values: string[]) => {
-        if (!values.length) return "";
+        if (!values.length) return "Select participants";
         const selectedOptions = PARTICIPANT_OPTIONS.filter((opt) => values.includes(opt.value));
         if (selectedOptions.length <= 1) {
           return selectedOptions.map((opt) => opt.label).join(", ");
@@ -148,7 +144,7 @@ const debouncedSetParticipantSearch = useMemo(
               <Label htmlFor="description" className="min-w-[120px]">Description</Label>
               <Input id="description" {...register("description")} placeholder="Enter description" />
             </div>
- {(chatType === ChatTypeEnum.AI || chatType === ChatTypeEnum.PRIVATE) ? (
+ {(chatType === ChatTypeEnum.AI || chatType === ChatTypeEnum.COMMUNITY) ? (
               <div className="flex items-center gap-4">
                 <Label className="min-w-[120px]">Participants</Label>
                 <SingleCombobox
@@ -190,7 +186,6 @@ const debouncedSetParticipantSearch = useMemo(
                 <GenericSelectContent options={CHAT_TYPE_OPTIONS} />
               </Select>
             </div>
-  
             <div className="flex items-center gap-4">
               <Label className="min-w-[120px]">Status</Label>
               <Select
@@ -203,7 +198,6 @@ const debouncedSetParticipantSearch = useMemo(
                 <GenericSelectContent options={CHAT_STATUS_OPTIONS} />
               </Select>
             </div>
-  
             {chatType === ChatTypeEnum.AI && (
               <div className="flex items-center gap-4">
                 <Label htmlFor="botId" className="min-w-[120px]">Bot ID</Label>
@@ -215,7 +209,7 @@ const debouncedSetParticipantSearch = useMemo(
                     <SelectValue placeholder="Select a bot" />
                   </SelectTrigger>
                   <SelectContent>
-                    {userBot?.data.data?.map((bot: any) => (
+                    {userBot?.data.items?.map((bot: any) => (
                       <SelectItem key={bot._id} value={bot._id}>
                         {bot.name || bot.username || `Bot ${bot._id}`}
                       </SelectItem>
@@ -225,7 +219,6 @@ const debouncedSetParticipantSearch = useMemo(
               </div>
             )}
 
-  
             <div className="flex flex-col gap-2 w-full">
               <div className="flex items-center gap-4">
               <Label htmlFor="thumbnail" className="min-w-[120px]">Thumbnail</Label>
@@ -238,13 +231,11 @@ const debouncedSetParticipantSearch = useMemo(
                   if (!file) return;
                   try {
                     const res = await uploadFile(file).unwrap();
-                    console.log("🚀 ~ uploadFile result:", res);
 
                     const uploadedUrl = res?.data?.url;
                     if (uploadedUrl) {
                       setValue("thumbnail", uploadedUrl);
                       setThumbnailUrl(uploadedUrl);
-                      console.log("🖼️ Thumbnail URL set to:", uploadedUrl);
                     }
 
                   } catch (error) {

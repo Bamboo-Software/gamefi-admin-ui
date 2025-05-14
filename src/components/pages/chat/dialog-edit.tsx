@@ -76,24 +76,13 @@ const DialogEditChat = ({
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
   const [originalThumbnailUrl, setOriginalThumbnailUrl] = useState<string | null>(null);
   const [uploadFile] = useUploadFileMutation();
-  // const [creatorSearch, setCreatorSearch] = useState("");
   const [participantSearch, setParticipantSearch] = useState("");
 
-  // const debouncedSetCreatorSearch = useMemo(
-  //   () => debounce((value: string) => setCreatorSearch(value), 300),
-  //   []
-  // );
+ 
   const debouncedSetParticipantSearch = useMemo(
     () => debounce((value: string) => setParticipantSearch(value), 300),
     []
   );
-
-  // const handleCreatorSearch = useCallback(
-  //   (query: string) => {
-  //     debouncedSetCreatorSearch(query);
-  //   },
-  //   [debouncedSetCreatorSearch]
-  // );
 
   const handleParticipantSearch = useCallback(
     (query: string) => {
@@ -114,7 +103,7 @@ const DialogEditChat = ({
       description: "",
       createdById: "",
       participantIds: [],
-      type: ChatTypeEnum.PRIVATE,
+      type: ChatTypeEnum.COMMUNITY,
       status: ChatStatusEnum.ACTIVE,
       thumbnail: "",
       botId: "",
@@ -128,7 +117,7 @@ const DialogEditChat = ({
         description: currentChat.description || "",
         createdById: currentChat.createdById || "",
         participantIds: currentChat.participantIds || [],
-        type: currentChat.type || ChatTypeEnum.PRIVATE,
+        type: currentChat.type || ChatTypeEnum.COMMUNITY,
         status: currentChat.status || ChatStatusEnum.ACTIVE,
         thumbnail: currentChat.thumbnail || "",
         botId: currentChat.botId || "",
@@ -142,7 +131,7 @@ const DialogEditChat = ({
         description: "",
         createdById: "",
         participantIds: [],
-        type: ChatTypeEnum.PRIVATE,
+        type: ChatTypeEnum.COMMUNITY,
         status: ChatStatusEnum.ACTIVE,
         thumbnail: "",
         botId: "",
@@ -184,18 +173,15 @@ const DialogEditChat = ({
     };
   }, [participantSearch]);
 
-  const { data: participantData } = useGetAllUsersQuery(participantQueryParams, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: participantData } = useGetAllUsersQuery(participantQueryParams);
 
 
   const PARTICIPANT_OPTIONS = useMemo(() => {
-    const raw = participantData?.data?.data || [];
+    const raw = participantData?.data?.items || [];
     const options = raw.map((user) => ({
       label: user.username,
       value: user._id,
     }));
-    
 
     if (currentChat?.participants) {
       currentChat.participants.forEach((participant) => {
@@ -207,7 +193,6 @@ const DialogEditChat = ({
         }
       });
       }
-    console.log("🚀 ~ options ~ options:", options)
 
     return options;
   }, [participantData, currentChat]);

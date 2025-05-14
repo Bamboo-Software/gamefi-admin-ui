@@ -92,9 +92,8 @@ const Tasks = () => {
     );
     return filteredParams;
   }, [currentPage, type,active,socialType, itemsPerPage, debouncedSearchTerm, sortConfig]);
-  const { data, isLoading } = useGetAllTasksQuery(queryParams, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data:taskData, isLoading } = useGetAllTasksQuery(queryParams);
+  console.log("🚀 ~ Tasks ~ taskData:", taskData)
   const [updateTask] = useUpdateTaskMutation();
   const [deleteTaskMutation] = useDeleteTaskMutation();
   const handleOpenDeleteDialog = (task: Task) => {
@@ -172,14 +171,14 @@ const Tasks = () => {
     setIsCreateTaskOpen(true);
   };
 useEffect(() => {
-    if (data?.data?.data) {
-      setTasks(data.data.data);
-      setTotal(data.data.total);
+    if (taskData?.data && taskData?.data.items) {
+      setTasks(taskData?.data.items);
+      setTotal(taskData?.data.total);
     } else {
       setTasks([]);
       setTotal(0);
     }
-}, [data]);
+}, [taskData]);
   useEffect(() => {
       const maxPage = Math.ceil(total / itemsPerPage);
       if (currentPage > maxPage && maxPage > 0) {

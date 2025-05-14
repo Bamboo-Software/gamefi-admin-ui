@@ -50,11 +50,9 @@ const DialogCreatePrize = ({
     },
   });
 
-  const { data, isLoading } = useGetAllGamesQuery({}, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data:gameData, isLoading } = useGetAllGamesQuery({});
 
-  const GAME_OPTIONS = data?.data?.data
+  const GAME_OPTIONS = gameData?.data?.items
   ?.filter((game: Game) => game.gameId !== 1)
   .map((game: Game) => ({
     label: game.title,

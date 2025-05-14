@@ -83,9 +83,7 @@ const Chats = () => {
     );
     return filteredParams;
   }, [currentPage,filters, itemsPerPage, debouncedSearchTerm, sortConfig]);
-  const { data, isLoading } = useGetAllChatsQuery(queryParams, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data:chatData, isLoading } = useGetAllChatsQuery(queryParams);
   const [updateChat] = useUpdateChatMutation();
   const [deleteChatMutation] = useDeleteChatMutation();
   const handleOpenDeleteDialog = (Chat: Chat) => {
@@ -145,7 +143,6 @@ const Chats = () => {
     setSelectedChats([]);
   };
   const handleCreateChat = async (data: any) => {
-    console.log("🚀 ~ handleCreateChat ~ data:", data)
     try {
       await createChat(data).unwrap();
       toast.success("Chat created successfully!");
@@ -165,14 +162,14 @@ const Chats = () => {
     setFilters((prev) => ({ ...prev, type: value }));
   };
 useEffect(() => {
-    if (data?.data?.data) {
-      setChats(data.data.data);
-      setTotal(data.data.total);
+    if (chatData?.data && chatData?.data.items) {
+      setChats(chatData?.data.items);
+      setTotal(chatData?.data.total);
     } else {
       setChats([]);
       setTotal(0);
     }
-}, [data]);
+}, [chatData]);
   useEffect(() => {
       const maxPage = Math.ceil(total / itemsPerPage);
       if (currentPage > maxPage && maxPage > 0) {
