@@ -3,7 +3,6 @@ export const routesPaths = {
     AUTH: '/auth',
     PROFILE: '/profile',
     AUTH_CALLBACK: '/auth/callback',
-
     // OVERVIEW: '/overview',
     CALENDAR: '/calendar',
     TASKS: '/tasks',
@@ -13,6 +12,14 @@ export const routesPaths = {
     SETTINGS: '/settings',
     CHAT: '/chats',
     HELP: '/help',
+    AI_GEN_OVERVIEW: '/ai-gen',
+    AI_GEN_ANALYTIC: 'analytic',
+    AI_GEN_USERS: 'users',
+    AI_GEN_TEMPLATES: 'templates',
+    AI_GEN_HISTORY: 'history',
+    AI_GEN_MODEL_STYLE: 'model-vs-style',
+    AI_GEN_SETTINGS: 'settings',
+    AI_GEN_HELP: 'help',
 };
 
 
