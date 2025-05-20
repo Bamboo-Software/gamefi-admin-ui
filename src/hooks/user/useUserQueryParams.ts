@@ -25,8 +25,8 @@ const useUserQueryParams = ({
       email: debouncedSearchTerm,
       q: debouncedSearchTerm,
       username: debouncedSearchTerm,
-      role,
-      active,
+      role: role !== "all" ? role : "",
+      active: active !== "all" ? active : "",
       orderField: sortConfig?.key ?? "createdAt",
       orderDirection: sortConfig?.direction ?? "DESC",
     };

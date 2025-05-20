@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
-  Download,
   ListPlus,
   RefreshCw,
   Trash2,
@@ -196,10 +195,6 @@ useEffect(() => {
           <Button  onClick={handleOpenCreateDialog}>
             <ListPlus className="h-4 w-4 mr-2" />
             Add Task
-          </Button>
-          <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            Export
           </Button>
         </div>
       </div>

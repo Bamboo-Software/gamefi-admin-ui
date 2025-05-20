@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { routesPaths } from '@/constants/routes';
+import { TeamSwitcher } from "./team-switcher";
 
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -97,7 +98,13 @@ export function Sidebar({ className, onCollapse }: SidebarProps) {
             isCollapsed ? "w-18" : "w-64",
             className
         )}>
-            
+            <div className={cn(
+                "p-4  transition-colors duration-200 ",
+                "border-gray-200 dark:border-gray-700"
+            )}>
+                <TeamSwitcher isCollapsed={isCollapsed} />
+            </div>
+
             <div className="flex-1 relative">
                 <div className={`absolute transition-all duration-300 top-1/2 -translate-y-1/2 ${isCollapsed ? 'left-14' : 'left-60'}  z-10 flex flex-col gap-2`}>
                     <Button 

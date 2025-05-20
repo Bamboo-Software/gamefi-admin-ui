@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   CaretSortIcon,
   CheckIcon,
-  PlusCircledIcon,
+  // PlusCircledIcon,
 } from "@radix-ui/react-icons";
 
 import { cn } from "@/lib/utils";
@@ -16,7 +16,6 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
@@ -36,6 +35,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useAppDispatch, useAppSelector } from "@/stores/store";
+import { setModule } from "@/stores/theme/themeSlice";
 
 type Team = {
   label: string;
@@ -45,15 +46,15 @@ type Team = {
 const teams: Team[] = [
   {
     label: "Lottery Game",
-    value: "personal",
+    value: "lottery",
   },
   {
-    label: "Lottery AI",
-    value: "team-a",
+    label: "AI Gen",
+    value: "aigen",
   },
   {
     label: "AI Agent",
-    value: "team-b",
+    value: "aiagent",
   },
 ];
 
@@ -67,8 +68,11 @@ interface TeamSwitcherProps extends PopoverTriggerProps {
 export function TeamSwitcher({ className, isCollapsed = false }: TeamSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
-  const [selectedTeam, setSelectedTeam] = React.useState<Team>(teams[0]);
-
+  const selectedTeamState = useAppSelector(state => state.theme.admin);
+const handleTeamSwitch = (newModule: Team) => {
+    dispatch(setModule(newModule));
+  };
+const dispatch = useAppDispatch();
   return (
     <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
       <Popover open={open} onOpenChange={setOpen}>
@@ -83,18 +87,18 @@ export function TeamSwitcher({ className, isCollapsed = false }: TeamSwitcherPro
               isCollapsed ? "w-10 p-2" : "w-full",
               className
             )}
-            title={isCollapsed ? selectedTeam.label : undefined}
+            title={isCollapsed ? selectedTeamState.label : undefined}
           >
             <Avatar className={cn("h-5 w-5", isCollapsed ? "mr-0" : "mr-2")}>
               <AvatarImage
-                src={`https://avatar.vercel.sh/${selectedTeam.value}.png`}
-                alt={selectedTeam.label}
+                src={`https://avatar.vercel.sh/${selectedTeamState.value}.png`}
+                alt={selectedTeamState.label}
               />
               <AvatarFallback>SC</AvatarFallback>
             </Avatar>
             {!isCollapsed && (
               <>
-                {selectedTeam.label}
+                {selectedTeamState.label}
                 <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
               </>
             )}
@@ -102,22 +106,19 @@ export function TeamSwitcher({ className, isCollapsed = false }: TeamSwitcherPro
         </PopoverTrigger>
         <PopoverContent className={cn(
           "w-[200px] p-0 bg-gray-100 border-gray-300 text-gray-800 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200", 
-          
         )}>
           <Command>
             <CommandList>
-              <CommandInput placeholder="Search project..." className={"text-gray-200 dark:text-gray-800"} />
               <CommandEmpty>No project found.</CommandEmpty>
               <CommandGroup heading="Projects">
                 {teams.map((team) => (
                   <CommandItem
                     key={team.value}
                     onSelect={() => {
-                      setSelectedTeam(team);
-                      setOpen(false);
+                        handleTeamSwitch(team)
                     }}
                     className={cn(
-                      "text-sm", 
+                      "text-sm",
                       "dark:hover:bg-gray-700 hover:bg-gray-100"
                     )}
                   >
@@ -132,7 +133,7 @@ export function TeamSwitcher({ className, isCollapsed = false }: TeamSwitcherPro
                     <CheckIcon
                       className={cn(
                         "ml-auto h-4 w-4",
-                        selectedTeam.value === team.value
+                        selectedTeamState.value === team.value
                           ? "opacity-100"
                           : "opacity-0"
                       )}
@@ -142,20 +143,6 @@ export function TeamSwitcher({ className, isCollapsed = false }: TeamSwitcherPro
               </CommandGroup>
             </CommandList>
             <CommandSeparator className={"dark:bg-gray-700 bg-gray-200"} />
-            <CommandList>
-              <CommandGroup>
-                <CommandItem
-                  onSelect={() => {
-                    setShowNewTeamDialog(true);
-                    setOpen(false);
-                  }}
-                  className={"dark:hover:bg-gray-700 hover:bg-gray-100"}
-                >
-                  <PlusCircledIcon className="mr-2 h-5 w-5" />
-                  Create project
-                </CommandItem>
-              </CommandGroup>
-            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
