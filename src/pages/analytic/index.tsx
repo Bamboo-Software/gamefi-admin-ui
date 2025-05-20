@@ -54,7 +54,6 @@ import {
   ArrowUp,
   ArrowUpDown,
   BarChart3,
-  Download,
   LineChart,
   MoreHorizontal,
   PieChart,
@@ -267,10 +266,10 @@ const Analytic = () => {
               <SelectItem value="year">This year</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline">
+          {/* <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
             Export
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -330,7 +329,6 @@ const Analytic = () => {
         </Card>
       </div>
 
-    
       <Tabs defaultValue="visitors" className="space-y-4">
         <TabsList>
           <TabsTrigger value="visitors">Visitors</TabsTrigger>
@@ -338,8 +336,7 @@ const Analytic = () => {
           <TabsTrigger value="ads">Ads Performance</TabsTrigger>
           <TabsTrigger value="traffic">Traffic Sources</TabsTrigger>
         </TabsList>
-        
-   
+
         <TabsContent value="visitors" className="space-y-4">
           <Card>
             <CardHeader>

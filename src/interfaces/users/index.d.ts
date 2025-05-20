@@ -41,6 +41,7 @@ declare global {
     export interface CreateUserRequest{
         page?: number;
         q?: string;
+        prefix?: string;
         email?: string;
         limit?: number;
         role?: string;

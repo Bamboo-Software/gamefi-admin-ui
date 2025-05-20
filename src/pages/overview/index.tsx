@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoadingSpinner } from "@/components/spinner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRecentLoginQuery, useRevenueUserQuery, useRoleUserQuery, useSummaryUserQuery, useWeeklyActiveQuery } from "@/services/dashboard";
 import { formatDistanceToNow, parseISO } from "date-fns";
@@ -9,7 +10,7 @@ import {  Users, ArrowUpRight, ArrowDownRight
 import { Bar, BarChart, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from "recharts";
 
 const Overview = () => {
-  // Mock data for charts
+
   const {data:summaryUser,isLoading}=useSummaryUserQuery({})
   const {data:revenueUser}=useRevenueUserQuery({})
   const {data:roleUser}=useRoleUserQuery({})
@@ -86,11 +87,25 @@ const cardsData = summaryUser?.data
 
   return (
     <div className="flex flex-col p-6 space-y-6 text-gray-100 dark:text-gray-100">
-      <h1 className="text-3xl font-bold tracking-tight text-gray-800 dark:text-gray-100">Overview</h1>
-      <p className="text-muted-foreground">
-        Overview of your business metrics and analytics
-      </p>
-
+       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Overview Dashboard</h1>
+          <p className="text-muted-foreground">Track your website performance and user engagement</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Select defaultValue="30days">
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select period" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7days">Last 7 days</SelectItem>
+              <SelectItem value="30days">Last 30 days</SelectItem>
+              <SelectItem value="90days">Last 90 days</SelectItem>
+              <SelectItem value="year">This year</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {cardsData.map((cardData, idx) => (
@@ -104,22 +119,33 @@ const cardsData = summaryUser?.data
             <CardContent>
               <div className="text-2xl font-bold text-gray-900 dark:text-gray-50"> + {cardData.value}</div>
 
-              <p className={`text-xs flex items-center mt-1 ${cardData.colorMonth}`}>
+              <p className={`text-xs flex items-center mt-1`}>
+                <span className={`flex items-center ${cardData.colorMonth} mr-1`}>
                 {cardData.changeMonth >= 0 ? (
                   <ArrowUpRight className="h-3 w-3 mr-1" />
                 ) : (
                   <ArrowDownRight className="h-3 w-3 mr-1" />
                 )}
                 Month: {cardData.displayMonth}
+
+                </span>
+                <span className="text-gray-500">
+                 from last month
+                </span>
               </p>
 
-              <p className={`text-xs flex items-center mt-1 ${cardData.colorWeek}`}>
+              <p className={`text-xs flex items-center mt-1 `}>
+                 <span className={`flex items-center ${cardData.colorWeek} mr-1`}>
                 {cardData.changeWeek >= 0 ? (
                   <ArrowUpRight className="h-3 w-3 mr-1" />
                 ) : (
                   <ArrowDownRight className="h-3 w-3 mr-1" />
                 )}
                 Week: {cardData.displayWeek}
+                 </span>
+                <span className="text-gray-500">
+                from last week
+                </span>
               </p>
             </CardContent>
           </Card>
@@ -131,9 +157,9 @@ const cardsData = summaryUser?.data
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="bg-gray-100 dark:bg-gray-800">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          {/* <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger> */}
         </TabsList>
         
         <TabsContent value="overview" className="space-y-4">

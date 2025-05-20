@@ -82,6 +82,7 @@ export const TABLE_HEADERS = [
 ];
 
 export const ROLE_OPTIONS = [
+  { value: 'all', label: 'All' },
   { value: 'superadmin', label: 'Super Admin' },
   { value: 'admin', label: 'Admin' },
   { value: 'user', label: 'User' },
@@ -94,6 +95,7 @@ export const FREQUENCY_OPTIONS = [
   { value: 'permanent', label: 'Permanent' }
 ];
 export const STATUS_OPTIONS = [
+  { value: 'all', label: 'All' },
   { value: 'true', label: 'Active' },
   { value: 'false', label: 'Inactive' },
 ];

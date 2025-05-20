@@ -1,66 +1,51 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { baseUrl } from "@/configs/config";
 import { InvalidatesTagsEnum } from "@/constants/invalidates-tags";
-const reducerPath = "userApi";
-const endpoint = "admin/lottery";
+import { baseApi } from "../baseApi";
 
-export const userApi = createApi({
-  reducerPath,
-  tagTypes: [InvalidatesTagsEnum.USER],
-  baseQuery: fetchBaseQuery({
-    baseUrl,
-    prepareHeaders: (headers) => {
-      const storedToken = localStorage.getItem("auth-token");
-      if (storedToken) {
-        const cleanToken = storedToken.replace(/^"|"$/g, "");
-        headers.set("Authorization", `Bearer ${cleanToken}`);
-      }
-      return headers;
-    },
-  }),
-  endpoints: (builder) => ({
-    getAllUsers: builder.query<ApiResponse<PaginatedResponse<User[]>>, CreateUserRequest>({
-      query: ({ page, limit, offset,q,orderField,orderDirection,username,role,active,isBot}) => ({
-        url: `${endpoint}/users`,
-        method: "GET",
-        params: {
-          page,
-          limit,
-          offset,
-          username,
-          isBot,
-          q,
-          orderField,
-          orderDirection,
-          role,
-          active
-        },
-      }),
-      providesTags: [InvalidatesTagsEnum.USER],
-    }),
-    getUserDetail: builder.query<User, string>({
-      query: (userId) => ({
-        url: `${endpoint}/users/${userId}`,
-        method: "GET",
-      }),
-      providesTags: [InvalidatesTagsEnum.USER],
-    }),
-    updateUser: builder.mutation<User, { id: string; data: Partial<User> }>({
-      query: ({ id, data }) => ({
-        url: `${endpoint}/users/${id}`,
-        method: "PATCH",
-        body: data,
-      }),
-      invalidatesTags: [InvalidatesTagsEnum.USER],
-    }),
-    deleteUser: builder.mutation<void, string>({
-      query: (userId) => ({
-        url: `${endpoint}/users/${userId}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: [InvalidatesTagsEnum.USER],
-    }),
-  }),
-});
 
-export const { useGetAllUsersQuery,useDeleteUserMutation,useLazyGetAllUsersQuery,useUpdateUserMutation } = userApi;
+export const createUserApi = (prefix: string) => {
+  return baseApi.injectEndpoints({
+    endpoints: (builder) => ({
+      getAllUsers: builder.query<ApiResponse<PaginatedResponse<User[]>>, CreateUserRequest>({
+        query: ({ page, limit, offset, q, orderField, orderDirection, username, role, active, isBot,prefix }) => ({
+          url: `${prefix}/users`,
+          method: "GET",
+          params: {
+            page,
+            limit,
+            offset,
+            username,
+            isBot,
+            q,
+            orderField,
+            orderDirection,
+            role,
+            active,
+          },
+        }),
+        providesTags: [InvalidatesTagsEnum.USER],
+      }),
+      getUserDetail: builder.query<ApiResponse<User>, string>({
+        query: (userId) => ({
+          url: `${prefix}/users/${userId}`,
+          method: "GET",
+        }),
+        providesTags: [InvalidatesTagsEnum.USER],
+      }),
+      updateUser: builder.mutation<ApiResponse<User>, { id: string; data: Partial<User> }>({
+        query: ({ id, data }) => ({
+          url: `${prefix}/users/${id}`,
+          method: "PATCH",
+          body: data,
+        }),
+        invalidatesTags: [InvalidatesTagsEnum.USER],
+      }),
+      deleteUser: builder.mutation<void, string>({
+        query: (userId) => ({
+          url: `${prefix}/users/${userId}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: [InvalidatesTagsEnum.USER],
+      }),
+    }),
+  });
+};

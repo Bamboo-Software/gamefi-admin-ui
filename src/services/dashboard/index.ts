@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "@/configs/config";
 import { InvalidatesTagsEnum } from "@/constants/invalidates-tags";
 const reducerPath = "dashboardApi";
-const endpoint = "admin/lottery/dashboard";
+const endpoint = "admin/lottery/report";
 
 export const dashboardApi = createApi({
   reducerPath,
@@ -21,35 +21,35 @@ export const dashboardApi = createApi({
   endpoints: (builder) => ({
     summaryUser: builder.query({
       query: () => ({
-        url: `${endpoint}/summary-user`,
+        url: `${endpoint}/user-summary`,
         method: "GET",
       }),
       providesTags: [InvalidatesTagsEnum.DASHBOARD],
     }),
     revenueUser: builder.query({
       query: () => ({
-        url: `${endpoint}/revenue-user`,
+        url: `${endpoint}/user-revenue`,
         method: "GET",
       }),
       providesTags: [InvalidatesTagsEnum.DASHBOARD],
     }),
     roleUser: builder.query({
       query: () => ({
-        url: `${endpoint}/role-user`,
+        url: `${endpoint}/user-role`,
         method: "GET"
       }),
       providesTags: [InvalidatesTagsEnum.DASHBOARD],
     }),
     weeklyActive: builder.query({
       query: () => ({
-        url: `${endpoint}/weekly-active`,
+        url: `${endpoint}/user-weekly-active`,
         method: "GET"
       }),
       providesTags: [InvalidatesTagsEnum.DASHBOARD],
     }),
     recentLogin: builder.query({
       query: () => ({
-        url: `${endpoint}/recent-logins`,
+        url: `${endpoint}/user-recent-logins`,
         method: "GET"
       }),
       providesTags: [InvalidatesTagsEnum.DASHBOARD],
