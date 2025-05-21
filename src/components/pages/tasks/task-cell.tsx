@@ -117,7 +117,12 @@ const renderActions = ({ onEdit, onDelete,onView }: any) => (
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={onEdit}>Edit task</DropdownMenuItem>
+        <DropdownMenuItem onClick={
+          (e) => {
+            e.stopPropagation();
+            onEdit()
+          }
+          }>Edit task</DropdownMenuItem>
         {onView && <DropdownMenuItem onClick={onView}>View task</DropdownMenuItem>}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onDelete} className="text-red-600">Delete task</DropdownMenuItem>

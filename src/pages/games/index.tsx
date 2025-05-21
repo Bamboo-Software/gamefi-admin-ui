@@ -20,7 +20,6 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react";
-import { useCreateGameMutation, useCreatePrizeGameMutation, useCreatePrizeLotteryMutation, useDeleteGameMutation, useGetAllGamesQuery, useUpdateGameMutation } from "@/services/games";
 import { AdminTable } from "@/components/table-admin";
 import { debounce } from "lodash";
 import { LoadingSpinner } from "@/components/spinner";
@@ -40,6 +39,8 @@ import DialogCreateGame from "@/components/pages/games/dialog-create-game";
 import DialogViewGame from "@/components/pages/games/dialog-view";
 import DialogCreatePrize from "@/components/pages/games/dialog-create-prize-game";
 import DialogCreatePrizeLottery from "@/components/pages/games/dialog-create-prize-lottery";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
+import { createGameApi } from "@/services/games";
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 const Games = () => {
   const [games, setGames] = useState<Game[]>([]);
@@ -64,6 +65,9 @@ const Games = () => {
   const [isCreatePrizeGameOpen, setIsCreatePrizeGameOpen] = useState(false);
   const [isCreatePrizeLotteryOpen, setIsCreatePrizeLotteryOpen] = useState(false);
   const [isViewGameOpen, setIsViewGameOpen] = useState(false);
+   const prefix = useModulePrefix();
+  const gameApi = useMemo(() => createGameApi(prefix), [prefix]);
+  const { useCreateGameMutation,useCreatePrizeGameMutation,useCreatePrizeLotteryMutation,useGetAllGamesQuery,useDeleteGameMutation, useUpdateGameMutation } = gameApi;
   const [createGame] = useCreateGameMutation();
   const [createPrizeGame] = useCreatePrizeGameMutation();
   const [createPrizeLottery] = useCreatePrizeLotteryMutation();
@@ -90,7 +94,9 @@ const Games = () => {
     );
     return filteredParams;
   }, [currentPage,filters, itemsPerPage, debouncedSearchTerm, sortConfig]);
-  const { data:gameData, isLoading } = useGetAllGamesQuery(queryParams);
+  const { data:gameData, isLoading } = useGetAllGamesQuery(queryParams, {
+    refetchOnMountOrArgChange:true
+  });
   const [updateGame] = useUpdateGameMutation();
   const [deleteGameMutation] = useDeleteGameMutation();
   const handleOpenDeleteDialog = (Game: Game) => {
@@ -194,7 +200,6 @@ const Games = () => {
   const handleCategoryChange = (value: string) => {
     setFilters((prev) => ({ ...prev, category: value }));
   };
-  console.log("🚀 ~ useEffect ~ gameData:", gameData)
 useEffect(() => {
     if (gameData?.data && gameData?.data?.items) {
       setGames(gameData?.data?.items);

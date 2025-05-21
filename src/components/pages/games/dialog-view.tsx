@@ -20,8 +20,9 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
-import React from "react";
-import { useGetAllLotteryPrizesQuery } from "@/services/games";
+import React, { useMemo } from "react";
+import { createGameApi } from "@/services/games";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
 
 
 
@@ -35,7 +36,9 @@ const DialogViewGame = React.memo(
     setIsViewGameOpen: React.Dispatch<React.SetStateAction<boolean>>;
     currentGame: Game | null;
   }) => {
-
+const prefix = useModulePrefix();
+    const gameApi = useMemo(() => createGameApi(prefix), [prefix]);
+    const { useGetAllLotteryPrizesQuery } = gameApi;
     const { data: lotteryPrizesData, isLoading: isPrizesLoading, error: prizesError } =
       useGetAllLotteryPrizesQuery(
         {

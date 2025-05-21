@@ -115,8 +115,18 @@ const renderActions = ({ onEdit, onDelete, onView }: Partial<CellPropsChat>) => 
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={onEdit}>Edit chat</DropdownMenuItem>
-        {onView && <DropdownMenuItem onClick={onView}>View chat</DropdownMenuItem>}
+        <DropdownMenuItem onClick={
+          (e) => {
+            e.stopPropagation()
+            onEdit?.()
+          }
+          }>Edit chat</DropdownMenuItem>
+        {onView && <DropdownMenuItem onClick={
+          (e) => {
+            e.stopPropagation();
+            onView()
+          }
+          }>View chat</DropdownMenuItem>}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onDelete} className="text-red-600">Delete chat</DropdownMenuItem>
       </DropdownMenuContent>

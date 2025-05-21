@@ -95,11 +95,12 @@ export const CHAT_TYPE_OPTIONS = [
       setCurrent: (chat: Chat) => void;
       setEditOpen: (open: boolean) => void;
       setIsViewOpen: (open: boolean) => void;
+      setIsViewChatMessageOpen: (open: boolean) => void;
       getStatusColor: (status: string) => string;
       formatDate: (date?: string | Date) => string;
     }
   ): CellPropsChat[] => {
-    const { handleDelete, setCurrent, setEditOpen, setIsViewOpen, getStatusColor, formatDate } = utils;
+    const { handleDelete, setCurrent, setEditOpen, getStatusColor, formatDate,setIsViewChatMessageOpen } = utils;
   
     return [
       {
@@ -158,10 +159,15 @@ export const CHAT_TYPE_OPTIONS = [
           setCurrent(chat);
           setEditOpen(true);
         },
-        onView: () => {
-          setCurrent(chat);
-          setIsViewOpen(true);
-        },
+       onView: () => {
+  console.log("Clicked View Chat Message");
+  setCurrent(chat);
+  if (setIsViewChatMessageOpen) {
+    setIsViewChatMessageOpen(true);
+  } else {
+    console.error("setIsViewChatMessageOpen is not defined");
+  }
+},
         onDelete: () => handleDelete(chat),
       },
     ];

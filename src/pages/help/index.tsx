@@ -43,7 +43,6 @@ const Help = () => {
   // Handle search form submission
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Searching for:", searchQuery);
     // Implement search functionality here
   };
 

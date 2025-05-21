@@ -128,8 +128,18 @@ const renderActions = ({ onEdit, onDelete,onView }: any) => (
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={onEdit}>Edit user</DropdownMenuItem>
-        {onView && <DropdownMenuItem onClick={onView}>View user</DropdownMenuItem>}
+        <DropdownMenuItem onClick={
+          (e) => {
+            e.stopPropagation();
+            onEdit()
+          }
+          }>Edit user</DropdownMenuItem>
+        {onView && <DropdownMenuItem onClick={
+          (e) => {
+            e.stopPropagation();
+            onView()
+          }
+          }>View user</DropdownMenuItem>}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onDelete} className="text-red-600">Delete user</DropdownMenuItem>
       </DropdownMenuContent>

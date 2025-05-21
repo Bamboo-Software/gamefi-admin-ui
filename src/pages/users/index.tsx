@@ -27,8 +27,8 @@ import DialogEditUser from "@/components/pages/user/dialog-edit";
 import { ConfirmDeleteDialog } from "@/components/pages/user/dialog-delete";
 import useUserQueryParams from "@/hooks/user/useUserQueryParams";
 import DialogViewUser from "@/components/pages/user/dialog-view";
-import { useModulePrefix } from "@/hooks/usemodulePrefix";
 import { createUserApi } from "@/services/users";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
 
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 
@@ -162,10 +162,6 @@ const handleEditUser = useCallback(async () => {
             title="User Management"
             subtitle=" Manage your organization's users and their permissions"
           />
-          {/* <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button> */}
         </div>
         <Card>
           <CardHeader className="pb-3">
@@ -234,7 +230,8 @@ const handleEditUser = useCallback(async () => {
               getCellConfigs={(user, utils) => getUserCellConfigs(user, utils)}
               renderCell={(config, idx) => <TableUserGenericCell key={idx} {...config} />}
               columns={TABLE_HEADERS}
-              setIsViewOpen={setIsViewUserOpen} />
+              setIsViewOpen={setIsViewUserOpen}
+            />
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground min-w-[200px]">
                 {isLoading ? (

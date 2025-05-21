@@ -22,6 +22,7 @@ const AdminTableComponent  =
     setCurrent,
     setIsEditOpen,
     setIsViewOpen,
+    setIsViewChatMessageOpen,
     getStatusColor,
     getCellConfigs,
     handleSort,
@@ -35,6 +36,7 @@ const AdminTableComponent  =
           setCurrent: setCurrent,
           setEditOpen: setIsEditOpen,
           setIsViewOpen: setIsViewOpen,
+          setIsViewChatMessageOpen:setIsViewChatMessageOpen,
           getStatusColor,
           formatDate: formattedDate,
         })
@@ -44,6 +46,7 @@ const AdminTableComponent  =
       setIsViewOpen,
       setCurrent,
       setIsEditOpen,
+      setIsViewChatMessageOpen,
       handleDelete,
       getStatusColor,
       getCellConfigs,
@@ -66,27 +69,39 @@ const AdminTableComponent  =
               ))}
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={9} className="h-24 text-center">
-                  <LoadingSpinner />
-                </TableCell>
-              </TableRow>
-            ) : cellConfigs.length > 0 ? (
-              cellConfigs.map((dataConfigs, index) => (
-                <TableRow key={(data[index])._id ?? index}>
-                   {dataConfigs.map((config, idx) => renderCell(config, idx))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={9} className="h-24 text-center">
-                  No results found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+         <TableBody>
+  {isLoading ? (
+    <TableRow>
+      <TableCell colSpan={9} className="h-24 text-center">
+        <LoadingSpinner />
+      </TableCell>
+    </TableRow>
+  ) : cellConfigs.length > 0 ? (
+    cellConfigs.map((dataConfigs, index) => {
+      const rowItem = data[index];
+
+      return (
+        <TableRow
+          key={rowItem._id ?? index}
+          className="cursor-pointer hover:bg-muted/50 transition-colors"
+          onClick={(e) => {
+             e.stopPropagation();
+            setCurrent(rowItem);
+            setIsViewOpen(true);
+          }}
+        >
+          {dataConfigs.map((config, idx) => renderCell(config, idx))}
+        </TableRow>
+      );
+    })
+  ) : (
+    <TableRow>
+      <TableCell colSpan={9} className="h-24 text-center">
+        No results found.
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
         </Table>
       </div>
     );

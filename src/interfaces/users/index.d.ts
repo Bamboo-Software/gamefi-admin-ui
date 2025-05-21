@@ -39,6 +39,7 @@ declare global {
         transactions: Transaction[];
     }
     export interface CreateUserRequest{
+        userId?:string
         page?: number;
         q?: string;
         prefix?: string;

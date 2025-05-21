@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { InvalidatesTagsEnum } from "@/constants/invalidates-tags";
 import { baseApi } from "../baseApi";
 
@@ -22,6 +23,36 @@ export const createUserApi = (prefix: string) => {
             active,
           },
         }),
+        providesTags: [InvalidatesTagsEnum.USER],
+      }),
+      getAllTransactionUser: builder.infiniteQuery<
+          {
+            data: any;
+            items: Transaction[];
+            total: number;
+            limit: number;
+          },
+          { userId: string; prefix: string },
+          number
+        >({
+          infiniteQueryOptions: {
+            initialPageParam: 1,
+          getNextPageParam: (lastPage, _, lastPageParam) => {
+          const currentPage = lastPageParam;
+          const totalPages = Math.ceil(lastPage.data.total / lastPage.data.limit);
+          return currentPage < totalPages ? currentPage + 1 : undefined;
+        }
+      },
+      query: ({ queryArg, pageParam = 1 }) => {
+        return {
+          url: `${queryArg.prefix}/users/transaction/${queryArg.userId}`,
+          method: "GET",
+          params: {
+            offset: (pageParam - 1) * 10,
+            page: pageParam,
+          },
+        };
+      },
         providesTags: [InvalidatesTagsEnum.USER],
       }),
       getUserDetail: builder.query<ApiResponse<User>, string>({
