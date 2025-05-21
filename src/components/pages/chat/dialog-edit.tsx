@@ -15,10 +15,11 @@ import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import GenericSelectContent from "@/components/select-table";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ChatStatusEnum, ChatTypeEnum } from "@/enums/chat.enum";
-import { useGetAllUsersQuery } from "@/services/users";
 import { MultiCombobox } from "@/components/multi-combobox";
 import { debounce } from "lodash";
 import { useUploadFileMutation } from "@/services/upload";
+import { createUserApi } from "@/services/users";
+import { useModulePrefix } from "@/hooks/usemodulePrefix";
 
 type User = {
   _id: string;
@@ -172,7 +173,9 @@ const DialogEditChat = ({
       orderDirection: "DESC",
     };
   }, [participantSearch]);
+const prefix = useModulePrefix();
 
+const { useGetAllUsersQuery } = createUserApi(prefix);
   const { data: participantData } = useGetAllUsersQuery(participantQueryParams);
 
 

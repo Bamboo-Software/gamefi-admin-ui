@@ -25,6 +25,7 @@ export function Header() {
 
     const handleLogout = async () => {
         try {
+            localStorage.setItem("auth-token","");
             remove();
             window.location.href = routesPaths.AUTH;
         } catch (error) {

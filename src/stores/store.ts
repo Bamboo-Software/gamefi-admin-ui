@@ -5,12 +5,12 @@ import { authApi } from '@/services/auth';
 import authReducer ,{ namespace as authNamespace } from './auth/authSlice';
 import themeReducer, { namespace as themeNamespace } from './theme/themeSlice';
 
-import { userApi } from '@/services/users';
 import { taskApi } from '@/services/tasks';
 import { gameApi } from '@/services/games';
 import { dashboardApi } from '@/services/dashboard';
 import { chatApi } from '@/services/chats';
 import { uploadApi } from '@/services/upload';
+import { baseApi } from '@/services/baseApi';
 
 export const listenerMiddleware = createListenerMiddleware({
   onError: () => console.error('An error listener middleware occurred'),
@@ -21,7 +21,8 @@ const reducer = {
   [authNamespace]: authReducer,
   [themeNamespace]: themeReducer,
   [authApi.reducerPath]: authApi.reducer,
-  [userApi.reducerPath]: userApi.reducer,
+  // [userApi.reducerPath]: userApi.reducer,
+  [baseApi.reducerPath]: baseApi.reducer, 
   [taskApi.reducerPath]: taskApi.reducer,
   [gameApi.reducerPath]: gameApi.reducer,
   [dashboardApi.reducerPath]: dashboardApi.reducer,
@@ -35,7 +36,8 @@ export const store = configureStore({
     getDefaultMiddleware()
     .concat(
       authApi.middleware,
-      userApi.middleware,
+      baseApi.middleware,
+      // userApi.middleware,
       taskApi.middleware,
       gameApi.middleware,
       dashboardApi.middleware,

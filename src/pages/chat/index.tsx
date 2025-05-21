@@ -16,7 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import {
 
-  Download,
   ListPlus,
   RefreshCw,
   Trash2,
@@ -192,10 +191,10 @@ useEffect(() => {
             <ListPlus className="h-4 w-4 mr-2" />
               Add Chat
           </Button>
-          <Button variant="outline">
+          {/* <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
             Export
-          </Button>
+          </Button> */}
         </div>
       </div>
       <Card>

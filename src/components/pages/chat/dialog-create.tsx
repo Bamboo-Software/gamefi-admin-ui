@@ -15,11 +15,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import GenericSelectContent from "@/components/select-table";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ChatStatusEnum, ChatTypeEnum } from "@/enums/chat.enum";
-import { useGetAllUsersQuery } from "@/services/users";
 import { MultiCombobox } from "@/components/multi-combobox";
 import { debounce } from "lodash";
 import SingleCombobox from "@/components/single-combobox";
 import { useUploadFileMutation } from "@/services/upload";
+import { useModulePrefix } from "@/hooks/usemodulePrefix";
+import { createUserApi } from "@/services/users";
 
 type FormValues = {
   name?: string;
@@ -100,7 +101,8 @@ const debouncedSetParticipantSearch = useMemo(
       orderDirection: "DESC",
     };
   }, [participantSearch]);
-
+  const prefix = useModulePrefix();
+const { useGetAllUsersQuery } = createUserApi(prefix);
       const { data: participantData } = useGetAllUsersQuery(participantQueryParams);
     const { data:userBot } = useGetAllUsersQuery({isBot:true});
 

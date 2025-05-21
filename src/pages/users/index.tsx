@@ -11,8 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Download, RefreshCw } from "lucide-react";
-import { useDeleteUserMutation, useGetAllUsersQuery, useUpdateUserMutation } from "@/services/users";
+import {  RefreshCw } from "lucide-react";
 import { LoadingSpinner } from "@/components/spinner";
 import { debounce } from "lodash";
 import SearchInput from "@/components/input-search";
@@ -28,6 +27,8 @@ import DialogEditUser from "@/components/pages/user/dialog-edit";
 import { ConfirmDeleteDialog } from "@/components/pages/user/dialog-delete";
 import useUserQueryParams from "@/hooks/user/useUserQueryParams";
 import DialogViewUser from "@/components/pages/user/dialog-view";
+import { useModulePrefix } from "@/hooks/usemodulePrefix";
+import { createUserApi } from "@/services/users";
 
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 
@@ -55,8 +56,16 @@ const Users = () => {
     sortConfig,
   });
   const [isViewUserOpen, setIsViewUserOpen] = useState(false);
-  const { data:userData, isLoading } = useGetAllUsersQuery(queryParams);
-  console.log("🚀 ~ Users ~ userData:", userData)
+  const prefix = useModulePrefix();
+  const userApi = useMemo(() => createUserApi(prefix), [prefix]);
+  const {
+    useGetAllUsersQuery,
+    useUpdateUserMutation,
+    useDeleteUserMutation,
+  } = userApi;
+  const { data: userData, isLoading  } = useGetAllUsersQuery({ ...queryParams,prefix },{
+    refetchOnMountOrArgChange: true,
+  });
   const [updateUser] = useUpdateUserMutation();
   const [deleteUserMutation] = useDeleteUserMutation();
   const debouncedSetSearchTerm = useMemo(
@@ -78,7 +87,6 @@ const Users = () => {
       setCurrentUser(null);
     }
   };
-
   useEffect(() => {
     if (userData?.data) {
       setUsers(userData?.data?.items);
@@ -154,10 +162,10 @@ const handleEditUser = useCallback(async () => {
             title="User Management"
             subtitle=" Manage your organization's users and their permissions"
           />
-          <Button variant="outline">
+          {/* <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
             Export
-          </Button>
+          </Button> */}
         </div>
         <Card>
           <CardHeader className="pb-3">
