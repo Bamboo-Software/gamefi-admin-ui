@@ -60,7 +60,7 @@ const renderVersion = ({ value }: { value?: string }) => (
 );
 
 const renderUrl = ({ value }: { value?: string }) => (
-  <TableCell className="font-medium text-blue-600 underline cursor-pointer">
+  <TableCell className="font-medium text-blue-600 underline cursor-pointer truncate max-w-[100px]">
     <a href={value} target="_blank" rel="noopener noreferrer">
       {value}
     </a>
@@ -111,7 +111,7 @@ const renderActive = ({ value, getStatusColor }: any) => (
   </TableCell>
 );
 
-const renderActions = ({ onEdit, onDelete, onView }: any) => (
+const renderActions = ({ onEdit, onDelete }: any) => (
   <TableCell className="text-right flex justify-end">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -128,9 +128,14 @@ const renderActions = ({ onEdit, onDelete, onView }: any) => (
             onEdit()
           }
           }>Edit game</DropdownMenuItem>
-        {onView && <DropdownMenuItem onClick={onView}>View game</DropdownMenuItem>}
+        {/* {onView && <DropdownMenuItem onClick={onView}>View game</DropdownMenuItem>} */}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onDelete} className="text-red-600">Delete game</DropdownMenuItem>
+        <DropdownMenuItem onClick={
+          (e) => {
+            e.stopPropagation();
+            onDelete()
+          }
+          } className="text-red-600">Delete game</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </TableCell>
