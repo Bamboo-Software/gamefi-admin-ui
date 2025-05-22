@@ -20,11 +20,12 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import MultiSelectField from "@/components/multi-select";
 import { BLOCKCHAIN_OPTIONS, CRYPTO_OPTIONS, PRIZE_TYPE_OPTIONS } from "@/constants/games";
-import { useGetAllLotteryPrizesQuery } from "@/services/games";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
+import { createGameApi } from "@/services/games";
 
 
 
@@ -43,7 +44,9 @@ const DialogEditGame = React.memo(
     const { register, control, handleSubmit, reset, watch, setValue } = useForm({
       defaultValues: currentGame || {},
     });
-
+const prefix = useModulePrefix();
+    const gameApi = useMemo(() => createGameApi(prefix), [prefix]);
+    const { useGetAllLotteryPrizesQuery } = gameApi;
     const { data: lotteryPrizesData, isLoading: isPrizesLoading, error: prizesError } =
       useGetAllLotteryPrizesQuery(
         {
@@ -73,13 +76,17 @@ const DialogEditGame = React.memo(
       }
     }, [currentGame, lotteryPrizesData, reset]);
 
+    useEffect(() => {
+         if (!isEditGameOpen) {
+           reset();
+         }
+       }, [isEditGameOpen, reset]);
     const { fields } = useFieldArray({
       control,
       name: "prizes",
     });
 
     if (!currentGame) return null;
-
     return (
       <Dialog open={isEditGameOpen} onOpenChange={setIsEditGameOpen}>
         <DialogContent className="w-full max-w-5xl max-h-[70vh] overflow-y-auto">

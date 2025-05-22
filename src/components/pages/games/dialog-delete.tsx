@@ -2,8 +2,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 
 interface ConfirmDeleteDialogProps {
-    open: boolean;
-    onClose: () => void
+  open: boolean;
+  onClose: () => void
   onConfirm: () => void;
   username?: string;
 }

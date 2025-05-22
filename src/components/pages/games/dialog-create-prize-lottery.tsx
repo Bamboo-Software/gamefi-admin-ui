@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import GenericSelectContent from "@/components/select-table";
-import React from "react";
+import React, { useEffect } from "react";
 import { BLOCKCHAIN_OPTIONS, CRYPTO_OPTIONS, PRIZE_TYPE_LOTTERY_OPTIONS } from "@/constants/games";
 import { PrizeTypeEnum } from "@/enums/game.enum";
 import { BlockchainNameEnum, CryptoCurrencyEnum } from "@/enums/currency.enum";
@@ -54,7 +54,11 @@ const DialogCreatePrizeLottery = ({
     reset();
     setIsCreatePrizeLotteryOpen(false);
   };
-
+useEffect(() => {
+    if (!isCreatePrizeLotteryOpen) {
+      reset();
+    }
+  }, [isCreatePrizeLotteryOpen, reset]);
   return (
     <Dialog open={isCreatePrizeLotteryOpen} onOpenChange={setIsCreatePrizeLotteryOpen}>
       <DialogContent className="sm:max-w-[600px]">

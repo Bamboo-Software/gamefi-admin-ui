@@ -27,14 +27,16 @@ declare global {
         handleDelete: (item: T) => void;
       setCurrent: (item: T) => void;
       setIsViewOpen: (open: boolean) => void;
-        setIsEditOpen: (open: boolean) => void;
-        getStatusColor: (active: boolean) => string;
+      setIsEditOpen: (open: boolean) => void;
+      setIsViewChatMessageOpen?: (open: boolean) => void;
+      getStatusColor: (active: boolean) => string;
         getCellConfigs: (
           item: T,
           utils: {
             handleDelete: (item: T) => void;
             setCurrent: (item: T) => void;
             setIsViewOpen: (open: boolean) => void;
+            setIsViewChatMessageOpen?: (open: boolean) => void;
             setEditOpen: (open: boolean) => void;
             getStatusColor: (active: boolean) => string;
             formatDate: (date?: string) => string;

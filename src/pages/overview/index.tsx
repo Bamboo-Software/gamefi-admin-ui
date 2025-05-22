@@ -11,11 +11,21 @@ import { Bar, BarChart, Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tool
 
 const Overview = () => {
 
-  const {data:summaryUser,isLoading}=useSummaryUserQuery({})
-  const {data:revenueUser}=useRevenueUserQuery({})
-  const {data:roleUser}=useRoleUserQuery({})
-  const {data:weeklyActive}=useWeeklyActiveQuery({})
-  const {data:recentLogin}=useRecentLoginQuery({})
+  const {data:summaryUser,isLoading}=useSummaryUserQuery({}, {
+    refetchOnMountOrArgChange:true
+  })
+  const {data:revenueUser}=useRevenueUserQuery({}, {
+    refetchOnMountOrArgChange:true
+  })
+  const {data:roleUser}=useRoleUserQuery({}, {
+    refetchOnMountOrArgChange:true
+  })
+  const {data:weeklyActive}=useWeeklyActiveQuery({}, {
+    refetchOnMountOrArgChange:true
+  })
+  const {data:recentLogin}=useRecentLoginQuery({}, {
+    refetchOnMountOrArgChange:true
+  })
   if (isLoading || !summaryUser || !revenueUser || !roleUser || !weeklyActive || !recentLogin) {
     return <p><LoadingSpinner/></p>;
   }

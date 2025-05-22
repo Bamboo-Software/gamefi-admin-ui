@@ -14,10 +14,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import GenericSelectContent from "@/components/select-table";
 import { GameCategoryEnum } from "@/enums/game.enum";
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import MultiSelectField from "@/components/multi-select";
-import { useGetAllGamesQuery } from "@/services/games";
 import { DIFFICULTY_OPTIONS } from "@/constants/games";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
+import { createGameApi } from "@/services/games";
 type FormValues = {
   gameId: number;
   title: string;
@@ -45,7 +46,12 @@ const DialogCreateGame = ({
   setIsCreateGameOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleCreateGame: (data: any) => void;
   }) => {
-  const { data } = useGetAllGamesQuery();
+  const prefix = useModulePrefix();
+      const gameApi = useMemo(() => createGameApi(prefix), [prefix]);
+      const { useGetAllGamesQuery } = gameApi;
+  const { data } = useGetAllGamesQuery({},{
+    refetchOnMountOrArgChange:true
+  });
   const { register, handleSubmit, setValue, watch,reset } = useForm<FormValues>({
     defaultValues: {
       gameId: 0,
@@ -67,12 +73,17 @@ const DialogCreateGame = ({
     reset();
     setIsCreateGameOpen(false);
   };
-  React.useEffect(() => {
+  useEffect(() => {
     if (data?.data) {
       const nextId = data.data?.items?.length + 1;
       setValue("gameId", nextId);
     }
   }, [data, setValue]);
+  useEffect(() => {
+      if (!isCreateGameOpen) {
+        reset();
+      }
+    }, [isCreateGameOpen, reset]);
   return (
     <Dialog open={isCreateGameOpen} onOpenChange={setIsCreateGameOpen}>
       <DialogContent className="sm:max-w-[600px]">

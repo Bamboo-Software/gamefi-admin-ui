@@ -20,7 +20,6 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react";
-import { useCreateTaskMutation, useDeleteTaskMutation, useGetAllTasksQuery, useUpdateTaskMutation } from "@/services/tasks";
 import { AdminTable } from "@/components/table-admin";
 import { debounce } from "lodash";
 import { getStatusColor } from "@/utils";
@@ -37,6 +36,8 @@ import DialogEditTask from "@/components/pages/tasks/dialog-edit";
 import DialogCreateTask from "@/components/pages/tasks/dialog-create";
 import DialogViewTask from "@/components/pages/tasks/dialog-view";
 import { ConfirmDeleteDialog } from "@/components/pages/user/dialog-delete";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
+import { createTaskApi } from "@/services/tasks";
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 const Tasks = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -64,7 +65,9 @@ const Tasks = () => {
       active: true,
       socialTaskType: SocialTaskTypeEnum.INSTAGRAM_COMMENT,
     });
-
+ const prefix = useModulePrefix();
+  const taskApi = useMemo(() => createTaskApi(prefix), [prefix]);
+   const { useCreateTaskMutation,useGetAllTasksQuery,useUpdateTaskMutation,useDeleteTaskMutation } = taskApi;
   const [createTask] = useCreateTaskMutation();
     const [active, setActive] = useState("");
     const debouncedSetSearchTerm = useMemo(
@@ -91,8 +94,9 @@ const Tasks = () => {
     );
     return filteredParams;
   }, [currentPage, type,active,socialType, itemsPerPage, debouncedSearchTerm, sortConfig]);
-  const { data:taskData, isLoading } = useGetAllTasksQuery(queryParams);
-  console.log("🚀 ~ Tasks ~ taskData:", taskData)
+  const { data:taskData, isLoading } = useGetAllTasksQuery(queryParams, {
+    refetchOnMountOrArgChange:true
+  });
   const [updateTask] = useUpdateTaskMutation();
   const [deleteTaskMutation] = useDeleteTaskMutation();
   const handleOpenDeleteDialog = (task: Task) => {

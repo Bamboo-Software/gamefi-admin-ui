@@ -7,7 +7,7 @@ import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TYPE_OPTIONS, SOCIAL_TYPE_OPTIONS } from "@/constants/tasks";
 import { FREQUENCY_OPTIONS, STATUS_OPTIONS } from "@/constants/user";
 import { TaskFrequencyEnum, TaskTypeEnum, SocialTaskTypeEnum } from "@/enums/task.enums";
-import React from "react";
+import React, { useEffect } from "react";
 
 const DialogCreateTask = React.memo(({
   isCreateTaskOpen,
@@ -39,7 +39,19 @@ const DialogCreateTask = React.memo(({
     active: boolean;
     socialTaskType: SocialTaskTypeEnum;
 }>>
-}) => {
+  }) => {
+   useEffect(() => {
+     if (!isCreateTaskOpen) {
+             setNewTask({title: "",
+    description: "",
+    frequency: TaskFrequencyEnum.DAILY,
+    pointsReward: 0,
+    rewardDetails: "",
+    type: TaskTypeEnum.GAME,
+    active: true,
+    socialTaskType: SocialTaskTypeEnum.FACEBOOK_LIKE,})
+           }
+         }, [isCreateTaskOpen,setNewTask]);
   return (
     <Dialog open={isCreateTaskOpen} onOpenChange={setIsCreateTaskOpen}>
       <DialogContent className="sm:max-w-[600px]">

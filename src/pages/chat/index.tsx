@@ -20,7 +20,7 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react";
-import { useCreateChatMutation, useDeleteChatMutation, useGetAllChatsQuery, useUpdateChatMutation } from "@/services/chats";
+// import { useCreateChatMutation, useDeleteChatMutation, useGetAllChatsQuery, useUpdateChatMutation } from "@/services/chats";
 import { AdminTable } from "@/components/table-admin";
 import { debounce } from "lodash";
 import { LoadingSpinner } from "@/components/spinner";
@@ -37,6 +37,10 @@ import DialogCreateChat from "@/components/pages/chat/dialog-create";
 import DialogViewChat from "@/components/pages/chat/dialog-view";
 import DialogEditChat from "@/components/pages/chat/dialog-edit";
 import ConfirmDeleteDialog from "@/components/pages/chat/dialog-delete";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
+import { createChatApi } from "@/services/chats";
+import DialogViewChatMessage from "@/components/pages/chat/dialog-view-message";
+// import DialogViewChatMessage from "@/components/pages/chat/dialog-view-message";
 const PaginationTable = React.lazy(() => import("@/components/pagination-table"));
 const Chats = () => {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -51,19 +55,26 @@ const Chats = () => {
     status: "",
     type: "",
   });
-
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
-
   const [isEditChatOpen, setIsEditChatOpen] = useState(false);
   const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
   const [isCreateChatOpen, setIsCreateChatOpen] = useState(false);
   const [isViewChatOpen, setIsViewChatOpen] = useState(false);
+  const [isViewChatMessageOpen, setIsViewChatMessageOpen] = useState(false);
+  const prefix = useModulePrefix();
+  const chatApi = useMemo(() => createChatApi(prefix), [prefix]);
+  const {
+    useCreateChatMutation,
+    useGetAllChatsQuery,
+    useUpdateChatMutation,
+    useDeleteChatMutation
+  } = chatApi;
   const [createChat] = useCreateChatMutation();
   const debouncedSetSearchTerm = useMemo(
-        () => debounce((value: string) => setDebouncedSearchTerm(value), 150),
-        []
-    );
-    const queryParams = useMemo(() => {
+    () => debounce((value: string) => setDebouncedSearchTerm(value), 150),
+    []
+  );
+  const queryParams = useMemo(() => {
     const rawParams = {
       page: currentPage,
       limit: itemsPerPage,
@@ -81,8 +92,10 @@ const Chats = () => {
       )
     );
     return filteredParams;
-  }, [currentPage,filters, itemsPerPage, debouncedSearchTerm, sortConfig]);
-  const { data:chatData, isLoading } = useGetAllChatsQuery(queryParams);
+  }, [currentPage, filters, itemsPerPage, debouncedSearchTerm, sortConfig]);
+  const { data: chatData, isLoading } = useGetAllChatsQuery({ ...queryParams, prefix }, {
+    refetchOnMountOrArgChange:true
+  });
   const [updateChat] = useUpdateChatMutation();
   const [deleteChatMutation] = useDeleteChatMutation();
   const handleOpenDeleteDialog = (Chat: Chat) => {
@@ -92,7 +105,7 @@ const Chats = () => {
   const handleConfirmDelete = async () => {
     if (!currentChat) return;
     try {
-      await deleteChatMutation(currentChat._id).unwrap();
+      await deleteChatMutation({ id: currentChat._id, prefix }).unwrap();
 
     } catch {
       toast.error("Error while deleting Chat");
@@ -102,40 +115,41 @@ const Chats = () => {
     }
   };
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setSearchTerm(value);
-      debouncedSetSearchTerm(value);
-    }, [debouncedSetSearchTerm]);
+    const value = e.target.value;
+    setSearchTerm(value);
+    debouncedSetSearchTerm(value);
+  }, [debouncedSetSearchTerm]);
   const handleSelectChat = useCallback((userId: string) => {
-      setSelectedChats((prev) =>
-        prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
-      );
-    }, []);
-  const handleSort = useCallback((key: string) => {
-      setSortConfig((prev) => {
-        if (prev?.key === key) {
-          return prev.direction === "ASC" ? { key, direction: "DESC" } : null;
-        }
-        return { key, direction: "ASC" };
-      });
-    }, []);
-    const handleEditChat = useCallback(
-      async (formData: any) => {
-        if (!currentChat) return;
-        try {
-          await updateChat({
-            id: currentChat._id,
-            data: formData,
-          }).unwrap();
-          setCurrentChat(null);
-          setIsEditChatOpen(false);
-        } catch (err) {
-          console.error("Update chat failed:", err);
-        }
-      },
-      [currentChat, updateChat, setIsEditChatOpen]
+    setSelectedChats((prev) =>
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
     );
-    const memoizedChats = useMemo(() => chats, [chats]);
+  }, []);
+  const handleSort = useCallback((key: string) => {
+    setSortConfig((prev) => {
+      if (prev?.key === key) {
+        return prev.direction === "ASC" ? { key, direction: "DESC" } : null;
+      }
+      return { key, direction: "ASC" };
+    });
+  }, []);
+  const handleEditChat = useCallback(
+    async (formData: any) => {
+      if (!currentChat) return;
+      try {
+        await updateChat({
+          id: currentChat._id,
+          data: formData,
+          prefix
+        }).unwrap();
+        setCurrentChat(null);
+        setIsEditChatOpen(false);
+      } catch (err) {
+        console.error("Update chat failed:", err);
+      }
+    },
+    [currentChat, prefix, updateChat, setIsEditChatOpen]
+  );
+  const memoizedChats = useMemo(() => chats, [chats]);
 
   const handleDeleteSelected = () => {
     setChats(chats.filter(Chat => !selectedChats.includes(Chat._id)));
@@ -160,7 +174,7 @@ const Chats = () => {
   const handleCategoryChange = (value: string) => {
     setFilters((prev) => ({ ...prev, type: value }));
   };
-useEffect(() => {
+  useEffect(() => {
     if (chatData?.data && chatData?.data.items) {
       setChats(chatData?.data.items);
       setTotal(chatData?.data.total);
@@ -168,12 +182,12 @@ useEffect(() => {
       setChats([]);
       setTotal(0);
     }
-}, [chatData]);
+  }, [chatData]);
   useEffect(() => {
-      const maxPage = Math.ceil(total / itemsPerPage);
-      if (currentPage > maxPage && maxPage > 0) {
-        setCurrentPage(maxPage);
-      }
+    const maxPage = Math.ceil(total / itemsPerPage);
+    if (currentPage > maxPage && maxPage > 0) {
+      setCurrentPage(maxPage);
+    }
   }, [total, itemsPerPage, currentPage]);
   const memoizedGetCellConfigs = useCallback(
     (chat: Chat, utils: any) => getChatCellConfigs(chat, utils),
@@ -182,14 +196,14 @@ useEffect(() => {
   return (
     <div className="p-6 space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <PageHeading
+        <PageHeading
           title="Chats Management"
           subtitle="Manage your chats"
-      />
+        />
         <div className="flex items-center gap-2">
           <Button onClick={handleOpenCreateChatDialog} className="cursor-pointer">
             <ListPlus className="h-4 w-4 mr-2" />
-              Add Chat
+            Add Chat
           </Button>
           {/* <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
@@ -199,27 +213,27 @@ useEffect(() => {
       </div>
       <Card>
         <CardHeader className="pb-3">
-        <SectionHeader
-          title="Chats"
-          description="Manage your organization's chats, chat prize, and chat description."
-        />
+          <SectionHeader
+            title="Chats"
+            description="Manage your organization's chats, chat prize, and chat description."
+          />
           <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mt-4">
-              <div className="flex gap-4">
-                <SearchInput placeholder={"Search Chat..."} searchTerm={searchTerm} onChange={handleChange} />
-                <Select value={filters.status} onValueChange={handleActiveChange}>
-                  <SelectTrigger className="w-[120px] font-medium cursor-pointer">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <GenericSelectContent options={CHAT_STATUS_OPTIONS} />
-                </Select>
-                <Select value={filters.type} onValueChange={handleCategoryChange}>
-                  <SelectTrigger className="w-[120px] font-medium cursor-pointer">
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <GenericSelectContent options={CHAT_TYPE_OPTIONS} />
-                </Select>
-              </div>
-              <div className="flex items-center gap-4">
+            <div className="flex gap-4">
+              <SearchInput placeholder={"Search Chat..."} searchTerm={searchTerm} onChange={handleChange} />
+              <Select value={filters.status} onValueChange={handleActiveChange}>
+                <SelectTrigger className="w-[120px] font-medium cursor-pointer">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <GenericSelectContent options={CHAT_STATUS_OPTIONS} />
+              </Select>
+              <Select value={filters.type} onValueChange={handleCategoryChange}>
+                <SelectTrigger className="w-[120px] font-medium cursor-pointer">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <GenericSelectContent options={CHAT_TYPE_OPTIONS} />
+              </Select>
+            </div>
+            <div className="flex items-center gap-4">
               <Button
                 variant="outline"
                 size="sm"
@@ -248,8 +262,8 @@ useEffect(() => {
                 </SelectTrigger>
                 <GenericSelectContent options={ROW_OPTIONS} />
               </Select>
-              </div>
             </div>
+          </div>
         </CardHeader>
         <CardContent>
           {selectedChats.length > 0 && (
@@ -276,6 +290,7 @@ useEffect(() => {
             setIsEditOpen={setIsEditChatOpen}
             setIsViewOpen={setIsViewChatOpen}
             getStatusColor={getStatusColor}
+            setIsViewChatMessageOpen={setIsViewChatMessageOpen}
             handleSort={handleSort}
             getCellConfigs={memoizedGetCellConfigs}
             renderCell={(config, idx) => <TableChatGenericCell key={idx} {...config} />}
@@ -314,14 +329,16 @@ useEffect(() => {
         setIsCreateChatOpen={setIsCreateChatOpen}
         handleCreateChat={handleCreateChat}
       />
-     {currentChat && (
-      <DialogViewChat
+      {currentChat && (
+        <DialogViewChat
           isViewChatOpen={isViewChatOpen}
           setIsViewChatOpen={setIsViewChatOpen}
           currentChat={currentChat}
         />
       )}
-
+      {currentChat && (
+        <DialogViewChatMessage isViewChatMessageOpen={isViewChatMessageOpen} setIsViewChatMessageOpen={setIsViewChatMessageOpen} currentChat={currentChat} />
+      )}
     </div>
   );
 };

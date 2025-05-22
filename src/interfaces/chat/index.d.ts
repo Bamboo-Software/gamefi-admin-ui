@@ -30,6 +30,28 @@ declare global {
     status?: string;
     type?: string;
   }
-
+  export interface ChatRoomMessage {
+    id: string;
+    _id: string;
+    chatId: string;
+    senderId: string;
+    type:string;
+    content: string;
+    isRead: boolean;
+    sender: {
+      id: string;
+      username: string;
+      emailVerified: boolean;
+      phoneVerified: boolean;
+      avatar: string;
+      role: string;
+      active: boolean;
+      createdAt: string;
+      updatedAt: string;
+      hasPassword: boolean;
+    };
+    createdAt: string;
+    updatedAt: string;
+  }
 }
 export {}

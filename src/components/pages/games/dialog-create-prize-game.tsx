@@ -12,9 +12,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import GenericSelectContent from "@/components/select-table";
-import React from "react";
-import { useGetAllGamesQuery } from "@/services/games";
+import React, { useEffect, useMemo } from "react";
 import { BLOCKCHAIN_OPTIONS, PRIZE_TYPE_OPTIONS } from "@/constants/games";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
+import { createGameApi } from "@/services/games";
 
 type PrizeFormValues = {
   gameId: string;
@@ -49,8 +50,12 @@ const DialogCreatePrize = ({
       blockchainName: "solana",
     },
   });
-
-  const { data:gameData, isLoading } = useGetAllGamesQuery({});
+ const prefix = useModulePrefix();
+      const gameApi = useMemo(() => createGameApi(prefix), [prefix]);
+      const { useGetAllGamesQuery } = gameApi;
+  const {  data:gameData, isLoading } = useGetAllGamesQuery({},{
+    refetchOnMountOrArgChange:true
+  });
 
   const GAME_OPTIONS = gameData?.data?.items
   ?.filter((game: Game) => game.gameId !== 1)
@@ -64,7 +69,11 @@ const DialogCreatePrize = ({
     reset();
     setIsCreatePrizeGameOpen(false);
   };
-
+useEffect(() => {
+    if (!isCreatePrizeGameOpen) {
+      reset();
+    }
+  }, [isCreatePrizeGameOpen, reset]);
   return (
     <Dialog open={isCreatePrizeGameOpen} onOpenChange={setIsCreatePrizeGameOpen}>
       <DialogContent className="sm:max-w-[600px]">

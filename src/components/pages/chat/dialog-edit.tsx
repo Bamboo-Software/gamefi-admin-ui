@@ -19,7 +19,7 @@ import { MultiCombobox } from "@/components/multi-combobox";
 import { debounce } from "lodash";
 import { useUploadFileMutation } from "@/services/upload";
 import { createUserApi } from "@/services/users";
-import { useModulePrefix } from "@/hooks/usemodulePrefix";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
 
 type User = {
   _id: string;
@@ -176,11 +176,14 @@ const DialogEditChat = ({
 const prefix = useModulePrefix();
 
 const { useGetAllUsersQuery } = createUserApi(prefix);
-  const { data: participantData } = useGetAllUsersQuery(participantQueryParams);
+  const { data: participantData } = useGetAllUsersQuery({ ...participantQueryParams,prefix }, {
+    refetchOnMountOrArgChange:true
+  });
 
 
   const PARTICIPANT_OPTIONS = useMemo(() => {
     const raw = participantData?.data?.items || [];
+    console.log("🚀 ~ constPARTICIPANT_OPTIONS=useMemo ~ participantData:", participantData)
     const options = raw.map((user) => ({
       label: user.username,
       value: user._id,
@@ -202,10 +205,11 @@ const { useGetAllUsersQuery } = createUserApi(prefix);
  const getParticipantDisplayValue = (values: string[]) => {
     if (!values.length) return "";
     const selectedOptions = PARTICIPANT_OPTIONS.filter((opt) => values.includes(opt.value));
-    if (selectedOptions.length <= 1) {
+    console.log("🚀 ~ getParticipantDisplayValue ~ selectedOptions:", selectedOptions)
+    if (selectedOptions.length <=1) {
       return selectedOptions.map((opt) => opt.label).join(", ");
     }
-    return `${selectedOptions.slice(0, 1).map((opt) => opt.label).join(", ")} + more`;
+    return `${selectedOptions.slice(0, 4).map((opt) => opt.label).join(", ")} + more`;
   };
   const chatType = watch("type");
 

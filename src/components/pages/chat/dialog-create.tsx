@@ -19,7 +19,7 @@ import { MultiCombobox } from "@/components/multi-combobox";
 import { debounce } from "lodash";
 import SingleCombobox from "@/components/single-combobox";
 import { useUploadFileMutation } from "@/services/upload";
-import { useModulePrefix } from "@/hooks/usemodulePrefix";
+import { useModulePrefix } from "@/hooks/useModulePrefix";
 import { createUserApi } from "@/services/users";
 
 type FormValues = {
@@ -102,9 +102,14 @@ const debouncedSetParticipantSearch = useMemo(
     };
   }, [participantSearch]);
   const prefix = useModulePrefix();
-const { useGetAllUsersQuery } = createUserApi(prefix);
-      const { data: participantData } = useGetAllUsersQuery(participantQueryParams);
-    const { data:userBot } = useGetAllUsersQuery({isBot:true});
+  const userApi = useMemo(() => createUserApi(prefix), [prefix]);
+  const {
+    useGetAllUsersQuery,
+  } = userApi;
+  const { data: participantData } = useGetAllUsersQuery({ ...participantQueryParams,prefix },{
+    refetchOnMountOrArgChange: true,
+  });
+    const { data:userBot } = useGetAllUsersQuery({isBot:true,prefix});
 
       const PARTICIPANT_OPTIONS = useMemo(() => {
         const raw = participantData?.data?.items;
