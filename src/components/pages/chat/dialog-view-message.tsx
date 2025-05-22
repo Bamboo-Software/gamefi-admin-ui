@@ -45,34 +45,40 @@ const DialogViewChatMessage = ({
  const prefix = useModulePrefix();
     const chatApi = useMemo(() => createChatApi(prefix), [prefix]);
     const { useGetAllMessageChatInfiniteQuery } = chatApi;
-    const queryArg = currentChat ? { chatId: currentChat._id, prefix } : skipToken;
+   const queryArg = useMemo(() => {
+  return currentChat ? { chatId: currentChat._id, prefix } : skipToken;
+}, [currentChat, prefix]);
+
 
     const {
-      data,
-      isFetching,
-      fetchNextPage,
-      hasNextPage,
-    //   isError,
-    } = useGetAllMessageChatInfiniteQuery(queryArg);
-
+  data,
+  isFetching,
+  fetchNextPage,
+  hasNextPage,
+  refetch,
+} = useGetAllMessageChatInfiniteQuery(queryArg, {
+  refetchOnMountOrArgChange: true,
+});
+useEffect(() => {
+  if (isViewChatMessageOpen && currentChat) {
+    refetch();
+  }
+}, [isViewChatMessageOpen, currentChat, refetch]);
     const messages = data?.pages.flatMap(page => page.data.items) || [];
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
      const handleScroll = useCallback(() => {
       const container = scrollContainerRef.current;
       if (!container) return;
-    
+
       const { scrollTop, clientHeight, scrollHeight } = container;
-    
+
       if (isFetching || !hasNextPage) return;
-    
-    
       if (scrollTop + clientHeight >= scrollHeight - 100) {
         fetchNextPage();
       }
     }, [hasNextPage, isFetching, fetchNextPage]);
-    
-    
+
         useEffect(() => {
          const container = scrollContainerRef.current;
          const timer = setTimeout(() => {
@@ -88,7 +94,6 @@ const DialogViewChatMessage = ({
            clearTimeout(timer);
          };
        }, [handleScroll]);
-       
   return (
     <Dialog open={isViewChatMessageOpen} onOpenChange={setIsViewChatMessageOpen}>
       <DialogContent className="max-w-2xl flex flex-col p-0">
