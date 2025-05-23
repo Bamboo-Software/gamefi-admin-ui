@@ -151,7 +151,7 @@ const debouncedSetParticipantSearch = useMemo(
               <Label htmlFor="description" className="min-w-[120px]">Description</Label>
               <Input id="description" {...register("description")} placeholder="Enter description" />
             </div>
- {(chatType === ChatTypeEnum.AI || chatType === ChatTypeEnum.COMMUNITY) ? (
+ {(chatType === ChatTypeEnum.AI) ? (
               <div className="flex items-center gap-4">
                 <Label className="min-w-[120px]">Participants</Label>
                 <SingleCombobox

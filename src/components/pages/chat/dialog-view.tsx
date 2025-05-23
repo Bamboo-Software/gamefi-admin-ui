@@ -70,7 +70,6 @@ const DialogViewChat = React.memo(
     } = useGetAllParticipantChatInfiniteQuery(queryArg, {
     refetchOnMountOrArgChange:true
   });
-    
     const participants = data?.pages.flatMap(page => page.data.items) || [];
     const handleScroll = useCallback(() => {
       const container = scrollContainerRef.current;

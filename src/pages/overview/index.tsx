@@ -61,6 +61,7 @@ const cardsData = summaryUser?.data
       {
         title: "Total Users",
         value: summaryUser.data.totalUsers.value,
+        changeDay: summaryUser.data.totalUsers.changeDay,
         changeMonth: summaryUser.data.totalUsers.changeMonth,
         changeWeek: summaryUser.data.totalUsers.changeWeek,
         icon: <Users className="h-4 w-4" />,
@@ -68,6 +69,7 @@ const cardsData = summaryUser?.data
       {
         title: "Active Users",
         value: summaryUser.data.activeUsers.value,
+        changeDay: summaryUser.data.activeUsers.changeDay,
         changeMonth: summaryUser.data.activeUsers.changeMonth,
         changeWeek: summaryUser.data.activeUsers.changeWeek,
         icon: <Users className="h-4 w-4" />,
@@ -75,6 +77,7 @@ const cardsData = summaryUser?.data
       {
         title: "New Users This Week",
         value: summaryUser.data.newUsersThisWeek.value,
+        changeDay: summaryUser.data.newUsersThisWeek.changeDay,
         changeMonth: summaryUser.data.newUsersThisWeek.changeMonth,
         changeWeek: summaryUser.data.newUsersThisWeek.changeWeek,
         icon: <Users className="h-4 w-4" />,
@@ -82,14 +85,17 @@ const cardsData = summaryUser?.data
       {
         title: "Active Today",
         value: summaryUser.data.activeUsersToday.value,
+        changeDay: summaryUser.data.activeUsersToday.changeDay,
         changeMonth: summaryUser.data.activeUsersToday.changeMonth,
         changeWeek: summaryUser.data.activeUsersToday.changeWeek,
         icon: <Users className="h-4 w-4" />,
       },
     ].map((item) => ({
       ...item,
+      displayDay: `${item.changeDay > 0 ? "+" : ""}${item.changeDay}%`,
       displayMonth: `${item.changeMonth > 0 ? "+" : ""}${item.changeMonth}%`,
       displayWeek: `${item.changeWeek > 0 ? "+" : ""}${item.changeWeek}%`,
+      colorDay: getColor(item.changeDay),
       colorMonth: getColor(item.changeMonth),
       colorWeek: getColor(item.changeWeek),
     }))
@@ -130,6 +136,20 @@ const cardsData = summaryUser?.data
               <div className="text-2xl font-bold text-gray-900 dark:text-gray-50"> + {cardData.value}</div>
 
               <p className={`text-xs flex items-center mt-1`}>
+                <span className={`flex items-center ${cardData.colorDay} mr-1`}>
+                {cardData.changeDay >= 0 ? (
+                  <ArrowUpRight className="h-3 w-3 mr-1" />
+                ) : (
+                  <ArrowDownRight className="h-3 w-3 mr-1" />
+                )}
+                Day: {cardData.displayDay}
+
+                </span>
+                <span className="text-gray-500">
+                 from last day
+                </span>
+              </p>
+              <p className={`text-xs flex items-center mt-1`}>
                 <span className={`flex items-center ${cardData.colorMonth} mr-1`}>
                 {cardData.changeMonth >= 0 ? (
                   <ArrowUpRight className="h-3 w-3 mr-1" />
@@ -167,9 +187,6 @@ const cardsData = summaryUser?.data
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="bg-gray-100 dark:bg-gray-800">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          {/* <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger> */}
         </TabsList>
         
         <TabsContent value="overview" className="space-y-4">

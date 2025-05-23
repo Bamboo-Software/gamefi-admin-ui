@@ -209,7 +209,7 @@ const { useGetAllUsersQuery } = createUserApi(prefix);
     if (selectedOptions.length <=1) {
       return selectedOptions.map((opt) => opt.label).join(", ");
     }
-    return `${selectedOptions.slice(0, 4).map((opt) => opt.label).join(", ")} + more`;
+    return `${selectedOptions.slice(0, 2).map((opt) => opt.label).join(", ")} + more`;
   };
   const chatType = watch("type");
 
