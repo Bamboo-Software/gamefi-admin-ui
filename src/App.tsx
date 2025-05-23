@@ -11,8 +11,8 @@ import AuthPage from "./pages/auth";
 import AuthLayout from "./layouts/AuthLayout";
 import Overview from "./pages/overview";
 import LoadingPage from "./pages/LoadingPage";
-import { useRef } from "react";
-import { useGetMeQuery, useLazyGetMeQuery } from "./services/auth";
+import { useEffect, useRef } from "react";
+import {  useLazyGetMeQuery } from "./services/auth";
 // import Tasks from './pages/tasks';
 import Analytic from "./pages/analytic";
 import Users from "./pages/users";
@@ -55,16 +55,22 @@ const {
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem("auth-token");
+  const [triggerGetMe, { error, isLoading }] = useLazyGetMeQuery();
+  const hasCalled = useRef(false);
 
-  const { error, isLoading } = useGetMeQuery({});
+  useEffect(() => {
+    if (token && !hasCalled.current) {
+      triggerGetMe({});
+      hasCalled.current = true;
+    }
+  }, [token,triggerGetMe]);
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
+  if (isLoading) return <LoadingPage />;
   if (!token || (error && "status" in error && error.status === 401)) {
     localStorage.removeItem("auth-token");
     return <Navigate to="/auth" replace />;
   }
+
   return children;
 };
 
