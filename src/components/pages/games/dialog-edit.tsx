@@ -22,7 +22,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import React, { useEffect, useMemo } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import MultiSelectField from "@/components/multi-select";
+// import MultiSelectField from "@/components/multi-select";
 import { BLOCKCHAIN_OPTIONS, CRYPTO_OPTIONS, PRIZE_TYPE_OPTIONS } from "@/constants/games";
 import { useModulePrefix } from "@/hooks/useModulePrefix";
 import { createGameApi } from "@/services/games";
@@ -114,13 +114,13 @@ const prefix = useModulePrefix();
               <Field label="Image URL">
                 <Input {...register("imageUrl")} />
               </Field>
-              <div className="flex items-center gap-4">
+              {/* <div className="flex items-center gap-4">
                 <Label className="text-right min-w-[120px]">Difficulty</Label>
                 <MultiSelectField
                   selected={watch("difficultyLevels")}
                   onChange={(vals) => setValue("difficultyLevels", vals as any)}
                 />
-              </div>
+              </div> */}
 
               <Field label="Active">
                 <Controller
