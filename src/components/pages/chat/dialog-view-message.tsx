@@ -50,15 +50,15 @@ const DialogViewChatMessage = ({
 }, [currentChat, prefix]);
 
 
-    const {
+  const {
   data,
   isFetching,
   fetchNextPage,
   hasNextPage,
   refetch,
-} = useGetAllMessageChatInfiniteQuery(queryArg, {
+  } = useGetAllMessageChatInfiniteQuery(queryArg, {
   refetchOnMountOrArgChange: true,
-});
+  });
 useEffect(() => {
   if (isViewChatMessageOpen && currentChat) {
     refetch();

@@ -58,15 +58,16 @@ const DialogViewChat = React.memo(
     const prefix = useModulePrefix();
     const chatApi = useMemo(() => createChatApi(prefix), [prefix]);
     const { useGetAllParticipantChatInfiniteQuery } = chatApi;
-    const queryArg = currentChat && currentChat._id
-    ? { chatId: currentChat._id as string, prefix }
-    : skipToken;
+    const queryArg = useMemo(() => {
+  return currentChat ? { chatId: currentChat._id as string, prefix } : skipToken;
+}, [currentChat, prefix]);
     const {
       data,
       isFetching,
       fetchNextPage,
       hasNextPage,
       isError,
+      refetch
     } = useGetAllParticipantChatInfiniteQuery(queryArg, {
     refetchOnMountOrArgChange:true
   });
@@ -101,7 +102,11 @@ const DialogViewChat = React.memo(
     clearTimeout(timer);
   };
 }, [handleScroll]);
-
+useEffect(() => {
+  if (isViewChatOpen && currentChat) {
+    refetch();
+  }
+}, [isViewChatOpen, currentChat, refetch]);
     
     return (
       <Dialog open={isViewChatOpen} onOpenChange={setIsViewChatOpen}>
