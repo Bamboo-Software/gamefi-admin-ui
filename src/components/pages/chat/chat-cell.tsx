@@ -128,7 +128,12 @@ const renderActions = ({ onEdit, onDelete, onView }: Partial<CellPropsChat>) => 
           }
           }>View chat</DropdownMenuItem>}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onDelete} className="text-red-600">Delete chat</DropdownMenuItem>
+        <DropdownMenuItem onClick={
+          (e) => {
+            e.stopPropagation();
+            onDelete?.()
+          }
+          } className="text-red-600">Delete chat</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </TableCell>

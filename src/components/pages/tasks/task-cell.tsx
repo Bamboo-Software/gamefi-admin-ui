@@ -106,7 +106,7 @@ const renderDeletedAt = (value: string) => (
   <TableCell className="font-medium">{value}</TableCell>
 );
 
-const renderActions = ({ onEdit, onDelete,onView }: any) => (
+const renderActions = ({ onEdit, onDelete }: any) => (
   <TableCell className="text-right flex justify-end">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -123,9 +123,14 @@ const renderActions = ({ onEdit, onDelete,onView }: any) => (
             onEdit()
           }
           }>Edit task</DropdownMenuItem>
-        {onView && <DropdownMenuItem onClick={onView}>View task</DropdownMenuItem>}
+        {/* {onView && <DropdownMenuItem onClick={onView}>View task</DropdownMenuItem>} */}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onDelete} className="text-red-600">Delete task</DropdownMenuItem>
+        <DropdownMenuItem onClick={
+          (e) => {
+            e.stopPropagation();
+            onDelete()
+          }
+          } className="text-red-600">Delete task</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </TableCell>

@@ -18,6 +18,7 @@ import { ChevronDown } from "lucide-react";
 import React, { useMemo, useRef, useEffect, useCallback } from "react";
 import { createUserApi } from "@/services/users";
 import { useModulePrefix } from "@/hooks/useModulePrefix";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Field = ({ label, children }:any) => (
   <div>
@@ -86,7 +87,7 @@ const DialogViewUser = React.memo(
     };
   }, [handleScroll]);
 
-
+  console.log("🚀 ~ currentUser:", currentUser)
     return (
       <Dialog open={isViewUserOpen} onOpenChange={setIsViewUserOpen}>
         <DialogContent className="w-full max-w-5xl max-h-[700px] overflow-y-auto">
@@ -101,22 +102,22 @@ const DialogViewUser = React.memo(
             <>
               <div className="grid grid-cols-3 gap-4 py-4">
                 <Field label="Full Name">
-                  <Input value={currentUser.fullName || "N/A"} disabled />
+                  <Input value={currentUser.fullName || currentUser.name || `${currentUser.firstName} ${currentUser.lastName}`} disabled />
                 </Field>
                 <Field label="Username">
-                  <Input value={currentUser.username || "N/A"} disabled />
+                  <Input value={currentUser.username || ""} disabled />
                 </Field>
                 <Field label="Role">
-                  <Input value={currentUser.role || "N/A"} disabled />
+                  <Input value={currentUser.role || ""} disabled />
                 </Field>
                 <Field label="Points Balance">
                   <Input value={currentUser.pointsBalance?.$numberDecimal || "0"} disabled />
                 </Field>
                 <Field label="Timezone">
-                  <Input value={currentUser.timezone || "N/A"} disabled />
+                  <Input value={currentUser.timezone || ""} disabled />
                 </Field>
                 <Field label="Referral Code">
-                  <Input value={currentUser.referralCode || "N/A"} disabled />
+                  <Input value={currentUser.referralCode || ""} disabled />
                 </Field>
                 <Field label="Email Verified">
                   <Input value={currentUser.emailVerified ? "Yes" : "No"} disabled />
@@ -128,23 +129,29 @@ const DialogViewUser = React.memo(
                   <Input value={currentUser.active ? "Yes" : "No"} disabled />
                 </Field>
                 <Field label="Last Login">
-                  <Input value={currentUser.lastLoginAt ? new Date(currentUser.lastLoginAt).toLocaleString() : "N/A"} disabled />
+                  <Input value={currentUser.lastLoginAt ? new Date(currentUser.lastLoginAt).toLocaleString() : ""} disabled />
                 </Field>
                 <Field label="Created At">
-                  <Input value={currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleString() : "N/A"} disabled />
+                  <Input value={currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleString() : ""} disabled />
                 </Field>
                 <Field label="Updated At">
-                  <Input value={currentUser.updatedAt ? new Date(currentUser.updatedAt).toLocaleString() : "N/A"} disabled />
+                  <Input value={currentUser.updatedAt ? new Date(currentUser.updatedAt).toLocaleString() : ""} disabled />
                 </Field>
                 <Field label="Telegram Language">
-                  <Input value={currentUser.telegramLanguageCode || "N/A"} disabled />
+                  <Input value={currentUser.telegramLanguageCode || ""} disabled />
                 </Field>
                 <Field label="Estimated Telegram Account Age">
-                  <Input value={currentUser.estimatedTelegramAccountAge || "N/A"} disabled />
+                  <Input value={currentUser.estimatedTelegramAccountAge || ""} disabled />
                 </Field>
-                <Field label="Avatar URL">
-                  <Input value={currentUser.avatar || "N/A"} disabled />
-                </Field>
+               <Field label="Avatar">
+                <Avatar>
+                  <AvatarImage src={currentUser.avatar} alt="User avatar" />
+                  <AvatarFallback>
+                    {currentUser.name?.charAt(0).toUpperCase() ?? "U"}
+                  
+                  </AvatarFallback>
+                </Avatar>
+              </Field>
               </div>
 
               <div className="mt-4">
