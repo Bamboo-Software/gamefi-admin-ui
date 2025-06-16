@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "@/configs/config";
 import { InvalidatesTagsEnum } from "@/constants/invalidates-tags";
 const reducerPath = "dashboardApi";
-const endpoint = "admin/lottery/report";
+const endpoint = "lottery/report";
 
 export const dashboardApi = createApi({
   reducerPath,

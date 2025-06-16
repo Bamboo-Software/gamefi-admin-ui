@@ -3,7 +3,7 @@ import { baseUrl } from "@/configs/config";
 import { InvalidatesTagsEnum } from "@/constants/invalidates-tags";
 
 const reducerPath = "authApi";
-const endpoint = 'admin/auth';
+const endpoint = 'auth';
 
 
 export const authApi = createApi({

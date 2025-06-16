@@ -23,7 +23,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   onCollapse?: (collapsed: boolean) => void;
 }
 
-const { ROOT, ANALYTIC, TASKS, USERS, SETTINGS, HELP,GAMES,CHAT } = routesPaths
+const { ROOT, ANALYTIC, TASKS, USERS, SETTINGS, HELP,GAMES,SEASONS,CHAT } = routesPaths
 
 export function Sidebar({ className, onCollapse }: SidebarProps) {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -72,6 +72,11 @@ export function Sidebar({ className, onCollapse }: SidebarProps) {
             title: "Games",
             icon: <Gamepad className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")} />,
             href: GAMES,
+        },
+         {
+            title: "Seasons",
+            icon: <Gamepad className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")} />,
+            href: SEASONS,
         },
         {
             title: "Room Chat",

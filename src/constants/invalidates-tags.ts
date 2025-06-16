@@ -6,4 +6,6 @@ export enum InvalidatesTagsEnum {
     GAME="Game",
     DASHBOARD="Dashboard",
     CHAT="RoomChat",
+    SEASON="Season",
+    NFT="nft",
 }
