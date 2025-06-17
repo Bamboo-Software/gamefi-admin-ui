@@ -11,5 +11,5 @@ export const useModulePrefix = () => {
   if (adminModule === "aigen" && permissions.includes(adminModule)) return "admin/ai-gen";
   if (adminModule === "lottery" && permissions.includes(adminModule)) return "admin/lottery";
 
-  return "admin/default";
+  return "";
 };

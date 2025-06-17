@@ -7,6 +7,7 @@ export const routesPaths = {
     CALENDAR: '/calendar',
     TASKS: '/tasks',
     GAMES: '/games',
+    SEASONS: '/seasons',
     ANALYTIC: '/analytic',
     USERS: '/users',
     SETTINGS: '/settings',

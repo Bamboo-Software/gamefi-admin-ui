@@ -31,6 +31,7 @@ import AiGenUsers from "./pages/ai-gen/ai-generator";
 import AiGenTemplates from "./pages/ai-gen/templates";
 import AiGenHistory from "./pages/ai-gen/history";
 import AiGenModelStyle from "./pages/ai-gen/model-style";
+import Seasons from './pages/seasons';
 
 const {
   ROOT,
@@ -51,6 +52,7 @@ const {
   AI_GEN_MODEL_STYLE,
   AI_GEN_SETTINGS,
   AI_GEN_HELP,
+  SEASONS
 } = routesPaths;
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -114,6 +116,7 @@ const routes = createBrowserRouter([
       { index: true, element: <Overview /> },
       { path: TASKS, element: <Tasks /> },
       { path: GAMES, element: <Games /> },
+      { path: SEASONS, element: <Seasons /> },
       { path: CALENDAR, element: <Calendar /> },
       { path: ANALYTIC, element: <Analytic /> },
       { path: USERS, element: <Users /> },
