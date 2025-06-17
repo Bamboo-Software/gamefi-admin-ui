@@ -117,7 +117,7 @@ const DialogViewSeason = React.memo(
                         <CollapsibleContent className="mt-2 px-4 pb-2 text-sm">
                           <div className="grid grid-cols-2 gap-5">
                             <div className='col-span-1'>
-                              <Image className='rounded-lg' src={currentSeason?.imageUrl || ''} alt={currentSeason.name}/>
+                              <Image className='rounded-lg' src={nft?.image || ''} alt={nft.name}/>
                             </div>
                             <div className="col-span-1 flex flex-col gap-2">
                               <div className='flex justify-between gap-2'>
