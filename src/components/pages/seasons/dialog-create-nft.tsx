@@ -62,8 +62,8 @@ useEffect(() => {
     <Dialog open={isCreateNFTOpen} onOpenChange={setIsCreateNFTOpen}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Create Prize Leaderboard</DialogTitle>
-          <DialogDescription>Select the game and fill in prize details.</DialogDescription>
+          <DialogTitle>Create NFT</DialogTitle>
+          <DialogDescription>Select the season and fill in nft details.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 py-4">
 
@@ -75,7 +75,7 @@ useEffect(() => {
               disabled={isLoading}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder={isLoading ? "Loading games..." : "Select game"} />
+                <SelectValue placeholder={isLoading ? "Loading seasons..." : "Select season"} />
               </SelectTrigger>
               <GenericSelectContent options={SEASON_OPTIONS ?? []} />
             </Select>
