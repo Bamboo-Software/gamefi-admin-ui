@@ -47,7 +47,7 @@ const DialogCreatePrize = ({
       prizeType: "TOKEN",
       amountAwarded: 0,
       cryptoCurrency: "",
-      blockchainName: "solana",
+      blockchainName: "avalanche",
     },
   });
  const prefix = useModulePrefix();

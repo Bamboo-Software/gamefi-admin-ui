@@ -27,7 +27,7 @@ const DialogCreateSeason = ({
 }: {
   isCreateSeasonOpen: boolean;
   setIsCreateSeasonOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleCreateSeason: (data: any) => void;
+  handleCreateSeason: (data: any) => Promise<void>;
   }) => {
   const prefix = useModulePrefix();
   const gameApi = useMemo(() => createGameApi(prefix), [prefix]);
@@ -47,8 +47,8 @@ const DialogCreateSeason = ({
     },
   });
 
-  const onSubmit = (data: any) => {
-    handleCreateSeason(data);
+  const onSubmit = async(data: any) => {
+    await handleCreateSeason(data);
     reset();
     setIsCreateSeasonOpen(false);
   };

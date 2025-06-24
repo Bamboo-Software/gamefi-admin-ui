@@ -42,7 +42,7 @@ export const createGameApi = (prefix:string) => {
         }
       >({
         query: ({ page, limit, offset, q, orderField, orderDirection, active }) => ({
-          url: `${prefix}/lottery-prizes`,
+          url: `${prefix}/games/lottery-prizes`,
           method: "GET",
           params: {
             page,

@@ -6668,6 +6668,7 @@ snapshots:
       next-themes: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       phaser: 3.88.2
       react: 19.1.0
+      react-day-picker: 9.7.0(react@19.1.0)
       react-dnd: 16.0.1(@types/node@22.14.0)(@types/react@19.1.0)(react@19.1.0)
       react-dnd-html5-backend: 16.0.1
       react-dom: 19.1.0(react@19.1.0)
