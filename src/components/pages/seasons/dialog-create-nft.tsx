@@ -26,7 +26,7 @@ const DialogCreateNFT = ({
 }: {
   isCreateNFTOpen: boolean;
   setIsCreateNFTOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleCreateNFTGame: (data: CreateNFTRequest) => void;
+  handleCreateNFTGame: (data: CreateNFTRequest) => Promise<void>;
 }) => {
   const { register, handleSubmit, setValue, watch, reset } = useForm<CreateNFTRequest>({
     defaultValues: {
@@ -48,8 +48,8 @@ const DialogCreateNFT = ({
     value: season._id,
   }));
 
-  const onSubmit = (data: CreateNFTRequest) => {
-    handleCreateNFTGame(data);
+  const onSubmit = async (data: CreateNFTRequest) => {
+    await handleCreateNFTGame(data);
     reset();
     setIsCreateNFTOpen(false);
   };

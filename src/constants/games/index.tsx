@@ -126,6 +126,7 @@ export const BLOCKCHAIN_OPTIONS = [
   { label: "Solana", value: "solana" },
   { label: "Ethereum", value: "ethereum" },
   { label: "BNB Chain", value: "bsc" },
+  { label: "Avalanche", value: "avalanche" },
 ];
 export const CRYPTO_OPTIONS = [
   { label: "JFOX", value: "JFOX" },
