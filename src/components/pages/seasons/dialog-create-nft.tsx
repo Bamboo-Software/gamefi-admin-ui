@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import GenericSelectContent from "@/components/select-table";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CreateNFTRequest } from '@/interfaces/nfts';
 import { createSeasonApi } from '@/services/seasons';
 import { Season } from '@/interfaces/seasons';
@@ -28,6 +28,7 @@ const DialogCreateNFT = ({
   setIsCreateNFTOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleCreateNFTGame: (data: CreateNFTRequest) => Promise<void>;
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, handleSubmit, setValue, watch, reset } = useForm<CreateNFTRequest>({
     defaultValues: {
       name: "",
@@ -49,9 +50,11 @@ const DialogCreateNFT = ({
   }));
 
   const onSubmit = async (data: CreateNFTRequest) => {
+    setIsSubmitting(true)
     await handleCreateNFTGame(data);
     reset();
     setIsCreateNFTOpen(false);
+    setIsSubmitting(false)
   };
 useEffect(() => {
     if (!isCreateNFTOpen) {
@@ -104,7 +107,7 @@ useEffect(() => {
 
           <DialogFooter>
             <Button variant="outline" type="button" onClick={() => setIsCreateNFTOpen(false)}>Cancel</Button>
-            <Button type="submit">Create NFT</Button>
+            <Button disabled={isSubmitting} type="submit">Create NFT</Button>
           </DialogFooter>
         </form>
       </DialogContent>
