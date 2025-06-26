@@ -28,4 +28,6 @@ export interface CreateSeasonRequest {
   requireNFT?: boolean;
   startDate?:string;
   endDate?:string;
+  nftQuantity?: number;
+  nftPrice?: number;
 }
