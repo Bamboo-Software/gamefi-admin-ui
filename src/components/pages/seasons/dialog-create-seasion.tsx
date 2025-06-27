@@ -18,7 +18,6 @@ import { useModulePrefix } from '@/hooks/useModulePrefix';
 import { createGameApi } from '@/services/games';
 import { CreateSeasonRequest } from '@/interfaces/seasons';
 import { DatePicker } from '@/components/ui/datePicker';
-import { Switch } from '@/components/ui/switch';
 
 const DialogCreateSeason = ({
   isCreateSeasonOpen,
@@ -29,7 +28,6 @@ const DialogCreateSeason = ({
   setIsCreateSeasonOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleCreateSeason: (data: any) => Promise<void>;
 }) => {
-  const [autoCreateNFT, setAutoCreateNFT] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const prefix = useModulePrefix();
@@ -55,7 +53,7 @@ const DialogCreateSeason = ({
     });
 
   const onSubmit = async (formData: CreateSeasonRequest) => {
-    if (autoCreateNFT) {
+    if (formData.requireNFT) {
       if (
         !formData.nftQuantity
       ) {
@@ -171,27 +169,7 @@ const DialogCreateSeason = ({
             />
           </div>
 
-          <div className='flex items-center gap-4'>
-            <Label htmlFor='active' className='text-right min-w-[120px]'>
-              NFT required
-            </Label>
-            <Select
-              value={watch('requireNFT')?.toString()}
-              onValueChange={(value) =>
-                setValue('requireNFT', value === 'true')
-              }
-            >
-              <SelectTrigger className='w-full'>
-                <SelectValue placeholder='Require NFT' />
-              </SelectTrigger>
-              <GenericSelectContent
-                options={[
-                  { label: 'Yes', value: 'true' },
-                  { label: 'No', value: 'false' },
-                ]}
-              />
-            </Select>
-          </div>
+     
 
           <div className='flex items-center gap-4'>
             <Label htmlFor='startDate' className='text-right min-w-[120px]'>
@@ -215,18 +193,29 @@ const DialogCreateSeason = ({
             />
           </div>
 
-          <div className='flex items-center gap-4'>
-            <Label htmlFor='autoCreateNFT' className='text-right min-w-[120px]'>
-              Auto Create NFT
+     <div className='flex items-center gap-4'>
+            <Label htmlFor='active' className='text-right min-w-[120px]'>
+              NFT required
             </Label>
-            <Switch
-              id='autoCreateNFT'
-              checked={autoCreateNFT}
-              onCheckedChange={(checked) => setAutoCreateNFT(checked)}
-            />
+            <Select
+              value={watch('requireNFT')?.toString()}
+              onValueChange={(value) =>
+                setValue('requireNFT', value === 'true')
+              }
+            >
+              <SelectTrigger className='w-full'>
+                <SelectValue placeholder='Require NFT' />
+              </SelectTrigger>
+              <GenericSelectContent
+                options={[
+                  { label: 'Yes', value: 'true' },
+                  { label: 'No', value: 'false' },
+                ]}
+              />
+            </Select>
           </div>
 
-          {autoCreateNFT && (
+          {watch('requireNFT') && (
             <>
               <div className='flex items-center gap-4'>
                 <Label
