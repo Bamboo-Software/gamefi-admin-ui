@@ -146,9 +146,7 @@ const Seasons = () => {
   const handleOpenCreateGameDialog = () => {
     setIsCreateSeasonOpen(true);
   };
-  const handleOpenCreatePrizeGameDialog = () => {
-    setIsCreateNFTOpen(true);
-  };
+ 
   const handleActiveChange = (value: string) => {
     setFilters((prev) => ({ ...prev, active: value }));
   };
@@ -214,10 +212,6 @@ const Seasons = () => {
           subtitle="Manage your seasons"
       />
         <div className="flex items-center gap-2">
-          <Button  onClick={handleOpenCreatePrizeGameDialog} className="cursor-pointer">
-            <ListPlus className="h-4 w-4 mr-2" />
-              Add NFT
-          </Button>
           <Button onClick={handleOpenCreateGameDialog} className="cursor-pointer">
             <ListPlus className="h-4 w-4 mr-2" />
               Add Season
