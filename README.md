@@ -1,90 +1,111 @@
-# React + Vite + TypeScript Template (react-vite-ui)
+# Lottery Admin UI
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Dan5py/react-vite-ui/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://choosealicense.com/licenses/mit/)
 
-A React + Vite template powered by shadcn/ui.
+Lottery Admin UI is a modern administration dashboard for managing the Lottery platform. Built with React, Vite, and TypeScript, it provides tools for user management, blockchain monitoring, season control, and more.
+
+## 📝 About the Project
+
+This project enables administrators to:
+
+- Manage users, games, tasks, and rewards.
+- Monitor and interact with blockchain smart contracts for lottery draws, ticket purchases, and prize distribution.
+- Handle multiple lottery "seasons" (periods/rounds), each with its own configuration, participants, and results.
+- View real-time statistics, reports, and activity logs.
+- Use a modern, responsive UI with reusable components.
+
+### Blockchain Handling
+
+- Integrates with blockchain networks via smart contracts.
+- Displays transaction hashes, contract events, and blockchain status.
+- Allows admins to trigger on-chain actions (e.g., draw winners, distribute rewards).
+- Provides troubleshooting tools for blockchain operations.
+
+### Season Management
+
+- Supports creation, updating, and closing of lottery seasons.
+- Each season has its own tickets, prize pools, and participant tracking.
+- Admins can configure season-specific rules and monitor progress.
 
 ## 🎉 Features
 
-- **React** - A JavaScript library for building user interfaces.
-- **Vite** - A fast, opinionated frontend build tool.
-- **TypeScript** - A typed superset of JavaScript that compiles to plain JavaScript.
-- **Tailwind CSS** - A utility-first CSS framework.
-- **Tailwind Prettier Plugin** - A Prettier plugin for formatting Tailwind CSS classes.
-- **ESLint** - A pluggable linting utility for JavaScript and TypeScript.
-- **PostCSS** - A tool for transforming CSS with JavaScript.
-- **Autoprefixer** - A PostCSS plugin to parse CSS and add vendor prefixes.
-- **shadcn/ui** - Beautifully designed components that you can copy and paste into your apps.
-- **React Router Dom** - Router navigation
-- **RTK Query** - Api handling
-- **Redux Toolkit** - State management
-- **React Icons + Lucide** - Icons
-- **Motion** - Animation
-- **React Hook Form** - Form handling
+- **React** – Modern UI library.
+- **Vite** – Fast build tool.
+- **TypeScript** – Type-safe development.
+- **Tailwind CSS** – Utility-first styling.
+- **shadcn/ui** – Beautiful UI components.
+- **Redux Toolkit & RTK Query** – State and API management.
+- **React Hook Form** – Form handling.
+- **React Router Dom** – Routing.
+- **Motion** – Animations.
+- **ESLint & Prettier** – Code quality.
+- **Docker** – Containerization support.
 
 ## ⚙️ Prerequisites
 
-Make sure you have the following installed on your development machine:
-
 - Node.js (version 16 or above)
-- pnpm (package manager)
+- pnpm (recommended), npm, or yarn
 
 ## 🚀 Getting Started
 
-Follow these steps to get started with the react-vite-ui template:
+Follow these steps to run the project locally:
 
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/phihoang1709/react-base-rtk.git
+1. **Clone the repository:**
+   ```sh
+   git clone <your-repo-url>
+   cd admin-ui
    ```
 
-2. Navigate to the project directory:
-
-   ```bash
-   cd react-vite-ui
-   ```
-
-3. Install the dependencies:
-
-   ```bash
+2. **Install dependencies:**
+   ```sh
    pnpm install
+   # or
+   npm install
+   # or
+   yarn install
    ```
 
-4. Start the development server:
+3. **Configure environment variables:**
+   - Copy the example file and edit as needed:
+     ```sh
+     cp .env.example .env
+     ```
+   - Edit `.env` to set your backend API endpoint.
 
-   ```bash
+4. **Run the development server:**
+   ```sh
    pnpm dev
+   # or
+   npm run dev
+   # or
+   yarn dev
+   ```
+   The app will be available at [http://localhost:5173](http://localhost:5173) by default.
+
+5. **Build for production:**
+   ```sh
+   pnpm build
+   # or
+   npm run build
+   # or
+   yarn build
    ```
 
-## 📜 Available Scripts
+6. **Preview the production build:**
+   ```sh
+   pnpm preview
+   # or
+   npm run preview
+   # or
+   yarn preview
+   ```
 
-- pnpm dev - Starts the development server.
-- pnpm build - Builds the production-ready code.
-- pnpm lint - Runs ESLint to analyze and lint the code.
-- pnpm preview - Starts the Vite development server in preview mode.
 
-## 📂 Project Structure
-
-The project structure follows a standard React application layout:
-
-```python
-react-vite-ui/
-  ├── node_modules/      # Project dependencies
-  ├── public/            # Public assets
-  ├── src/               # Application source code
-  │   ├── components/    # React components
-  │   │   └── ui/        # shadc/ui components
-  │   ├── styles/        # CSS stylesheets
-  │   ├── lib/           # Utility functions
-  │   ├── App.tsx        # Application entry point
-  │   └── index.tsx      # Main rendering file
-  ├── eslint.config.js     # ESLint configuration
-  ├── index.html         # HTML entry point
-  ├── tsconfig.json      # TypeScript configuration
-  └── vite.config.ts     # Vite configuration
-```
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](https://choosealicense.com/licenses/mit/) file for details.
+7. **Run lint checks:**
+   ```sh
+   pnpm lint
+   # or
+   npm run lint
+   # or
+   yarn lint
+   ```
