@@ -1,8 +1,8 @@
-# Lottery Admin UI
+# Flappy Fox Admin UI
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://choosealicense.com/licenses/mit/)
 
-Lottery Admin UI is a modern administration dashboard for managing the Lottery platform. Built with React, Vite, and TypeScript, it provides tools for user management, blockchain monitoring, season control, and more.
+Flappy Fox Admin UI is a modern administration dashboard for managing the Lottery platform. Built with React, Vite, and TypeScript, it provides tools for user management, blockchain monitoring, season control, and more.
 
 ## 📝 About the Project
 
@@ -20,6 +20,23 @@ This project enables administrators to:
 - Displays transaction hashes, contract events, and blockchain status.
 - Allows admins to trigger on-chain actions (e.g., draw winners, distribute rewards).
 - Provides troubleshooting tools for blockchain operations.
+
+## 🔗 Chainlink Features Used
+
+This project leverages several advanced Chainlink services to enhance security, interoperability, and fairness:
+
+### 1. Chainlink CCIP (Cross-Chain Interoperability Protocol)
+- **Purpose:** Enables secure cross-chain messaging and token transfers between supported blockchains.
+- **Usage in project:** Used for cross-chain NFT and token operations, allowing users to interact seamlessly across Ethereum, BSC, and Avalanche.
+
+### 2. Chainlink Price Feed
+- **Purpose:** Provides reliable, decentralized price data for various tokens.
+- **Usage in project:** Used to fetch real-time token prices for staking, rewards calculation, and NFT pricing, ensuring accurate and up-to-date values.
+
+### 3. Chainlink VRF (Verifiable Random Function)
+- **Purpose:** Supplies provably fair and tamper-proof randomness on-chain.
+- **Usage in project:** Used for random reward distributions, guaranteeing fairness and transparency for all participants.
+
 
 ### Season Management
 
